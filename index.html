@@ -1,0 +1,2228 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>APEX Synthetics | The 2026 Protocol - Complete Compendium</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --oled-black: #000000;
+            --glass-fill: rgba(10, 10, 10, 0.5);
+            --glass-highlight: rgba(255, 255, 255, 0.3);
+            --glass-highlight-hover: rgba(255, 255, 255, 0.6);
+            --border-light-start: rgba(255, 255, 255, 0.2);
+            --border-light-end: rgba(255, 255, 255, 0.02);
+            --border-hover-start: rgba(255, 255, 255, 0.5);
+            --border-hover-end: rgba(255, 255, 255, 0.05);
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--oled-black);
+            color: #FFFFFF;
+            -webkit-font-smoothing: antialiased;
+            overflow-x: hidden;
+        }
+
+        .text-liquid-silver {
+            background: linear-gradient(180deg, #FFFFFF 0%, #737373 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .nav-glass {
+            background-color: var(--glass-fill);
+            box-shadow: inset 0 -1px 0 var(--border-light-start);
+            transition: background-color 0.3s ease;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+        }
+
+        .liquid-card {
+            background-color: var(--glass-fill);
+            border-radius: 1.5rem;
+            position: relative;
+            box-shadow: inset 0 1px 0 var(--glass-highlight);
+            overflow: hidden;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: 1;
+        }
+        /*so vscode wants me dead here because i didnt define -webkit-mask for compatibility so im not fixing that shit as long as it works*/
+        .liquid-card::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: inherit;
+            padding: 1px;
+            background: linear-gradient(to bottom right, var(--border-light-start), var(--border-light-end));
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
+            pointer-events: none;
+            transition: background 0.4s ease;
+            z-index: 2;
+        }
+
+        .liquid-card:hover {
+            box-shadow: inset 0 1px 0 var(--glass-highlight-hover);
+            transform: translateY(-2px);
+        }
+
+        .liquid-card:hover::before {
+            background: linear-gradient(to bottom right, var(--border-hover-start), var(--border-hover-end));
+        }
+
+        .liquid-card .glow {
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 150%;
+            height: 150%;
+            background: radial-gradient(circle at top, rgba(255, 255, 255, 0.06) 0%, transparent 60%);
+            opacity: 0;
+            transition: opacity 0.5s ease;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .liquid-card:hover .glow {
+            opacity: 1;
+        }
+
+        .liquid-card > div {
+            position: relative;
+            z-index: 10;
+        }
+
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+            100% { transform: translateY(0px); }
+        }
+        .animate-float {
+            animation: float 6s ease-in-out infinite;
+        }
+
+        .page-section {
+            display: none;
+            animation: fadeIn 0.4s ease-out;
+        }
+        .page-section.active {
+            display: block;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .accordion-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s ease-in-out;
+        }
+        .accordion-content.open {
+            max-height: 1000px;
+        }
+
+        .dropdown-menu {
+            display: none;
+            position: absolute;
+            background-color: rgba(10, 10, 10, 0.95);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 1rem;
+            min-width: 260px;
+            z-index: 60;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            top: 100%;
+            left: 0;
+            margin-top: 0.5rem;
+            padding: 0.5rem;
+        }
+        .dropdown:hover .dropdown-menu,
+        .dropdown:focus-within .dropdown-menu {
+            display: block;
+        }
+
+        .tier-table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+        .tier-table th,
+        .tier-table td {
+            padding: 0.75rem 1rem;
+            text-align: left;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        #backToTop {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            z-index: 100;
+            display: none;
+            align-items: center;
+            justify-content: center;
+        }
+        #backToTop.visible {
+            display: flex;
+        }
+
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #000;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 255, 255, 0.4);
+        }
+
+        /* shit for mobile */
+        #mobileMenu {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.9);
+            z-index: 70;
+            padding: 2rem;
+            overflow-y: auto;
+        }
+        #mobileMenu.open {
+            display: block;
+        }
+
+        /* search input */
+        #searchInput {
+            background: transparent;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 0.5rem;
+            padding: 0.5rem 1rem;
+            color: white;
+            outline: none;
+        }
+        #searchInput:focus {
+            border-color: rgba(255, 255, 255, 0.3);
+        }
+    </style>
+</head>
+<body class="selection:bg-white selection:text-black min-h-screen flex flex-col">
+
+    <!-- navigation system -->
+    <nav class="fixed w-full top-0 z-50 nav-glass">
+        <div class="max-w-7xl mx-auto px-6 md:px-12 h-20 flex items-center justify-between">
+            <div class="flex items-center gap-2 cursor-pointer" onclick="navigateTo('home')">
+                <div class="w-4 h-4 rounded-full bg-white"></div>
+                <span class="font-bold tracking-tight text-xl">APEX</span>
+            </div>
+
+            <!-- desktop navigation system -->
+            <div class="hidden md:flex gap-6 text-sm font-medium text-gray-400 items-center">
+                <a href="#home" class="hover:text-white transition nav-link" data-page="home">Home</a>
+                <a href="#tier-list" class="hover:text-white transition nav-link" data-page="tier-list">Tier List</a>
+                <div class="dropdown relative">
+                    <button class="flex items-center gap-1 hover:text-white transition text-gray-400 focus:outline-none">
+                        Peptides
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                    </button>
+                    <div class="dropdown-menu">
+                        <a href="#peptide-retachide" class="block px-4 py-2 rounded-lg text-sm text-gray-300 hover:bg-white/10 hover:text-white nav-link" data-page="peptide-retachide">Retachide</a>
+                        <a href="#peptide-melanotan2" class="block px-4 py-2 rounded-lg text-sm text-gray-300 hover:bg-white/10 hover:text-white nav-link" data-page="peptide-melanotan2">Melanotan 2</a>
+                        <a href="#peptide-bpc157" class="block px-4 py-2 rounded-lg text-sm text-gray-300 hover:bg-white/10 hover:text-white nav-link" data-page="peptide-bpc157">BPC 157</a>
+                        <a href="#peptide-cjc-epitalon" class="block px-4 py-2 rounded-lg text-sm text-gray-300 hover:bg-white/10 hover:text-white nav-link" data-page="peptide-cjc-epitalon">CJC1295 + Epitalon</a>
+                        <a href="#peptide-igf-lr3" class="block px-4 py-2 rounded-lg text-sm text-gray-300 hover:bg-white/10 hover:text-white nav-link" data-page="peptide-igf-lr3">IGF LR3</a>
+                        <a href="#peptide-ghk-cu" class="block px-4 py-2 rounded-lg text-sm text-gray-300 hover:bg-white/10 hover:text-white nav-link" data-page="peptide-ghk-cu">GHK-Cu</a>
+                        <a href="#peptide-oxytocin" class="block px-4 py-2 rounded-lg text-sm text-gray-300 hover:bg-white/10 hover:text-white nav-link" data-page="peptide-oxytocin">Oxytocin</a>
+                        <a href="#peptide-tb500" class="block px-4 py-2 rounded-lg text-sm text-gray-300 hover:bg-white/10 hover:text-white nav-link" data-page="peptide-tb500">TB-500</a>
+                        <a href="#peptide-semax" class="block px-4 py-2 rounded-lg text-sm text-gray-300 hover:bg-white/10 hover:text-white nav-link" data-page="peptide-semax">Semax</a>
+                        <a href="#peptide-selank" class="block px-4 py-2 rounded-lg text-sm text-gray-300 hover:bg-white/10 hover:text-white nav-link" data-page="peptide-selank">Selank</a>
+                        <a href="#peptide-mots-c" class="block px-4 py-2 rounded-lg text-sm text-gray-300 hover:bg-white/10 hover:text-white nav-link" data-page="peptide-mots-c">MOTS-c</a>
+                        <a href="#peptide-ss31" class="block px-4 py-2 rounded-lg text-sm text-gray-300 hover:bg-white/10 hover:text-white nav-link" data-page="peptide-ss31">SS-31</a>
+                        <a href="#peptide-aod9604" class="block px-4 py-2 rounded-lg text-sm text-gray-300 hover:bg-white/10 hover:text-white nav-link" data-page="peptide-aod9604">AOD9604</a>
+                        <a href="#peptide-tesamorelin" class="block px-4 py-2 rounded-lg text-sm text-gray-300 hover:bg-white/10 hover:text-white nav-link" data-page="peptide-tesamorelin">Tesamorelin</a>
+                        <a href="#peptide-ipamorelin" class="block px-4 py-2 rounded-lg text-sm text-gray-300 hover:bg-white/10 hover:text-white nav-link" data-page="peptide-ipamorelin">Ipamorelin</a>
+                    </div>
+                </div>
+                <a href="#research" class="hover:text-white transition nav-link" data-page="research">Research</a>
+                <a href="#protocols" class="hover:text-white transition nav-link" data-page="protocols">Protocols</a>
+                <a href="#faq" class="hover:text-white transition nav-link" data-page="faq">FAQ</a>
+                <a href="#contact" class="hover:text-white transition nav-link" data-page="contact">Contact</a>
+            </div>
+
+            <!-- search function, icl this shit doesnt work rn and im not tryna fix this shit lol -->
+            <div class="flex items-center gap-4">
+                <input type="text" id="searchInput" placeholder="Search peptides..." class="hidden md:block w-40 lg:w-64 text-sm">
+                <a href="#contact" class="bg-white text-black px-6 py-2.5 rounded-full text-sm font-semibold hover:bg-gray-200 transition shadow-[0_0_15px_rgba(255,255,255,0.2)] nav-link" data-page="contact">Access Protocols</a>
+                <!-- mobile menu button -->
+                <button id="mobileMenuBtn" class="md:hidden text-white focus:outline-none">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- mobile menu -->
+    <div id="mobileMenu">
+        <div class="flex justify-end mb-8">
+            <button id="closeMobileMenu" class="text-white text-3xl">&times;</button>
+        </div>
+        <div class="space-y-4 text-lg text-gray-300">
+            <a href="#home" class="block nav-link" data-page="home">Home</a>
+            <a href="#tier-list" class="block nav-link" data-page="tier-list">Tier List</a>
+            <div class="pt-2 font-semibold text-gray-500">Peptides</div>
+            <div class="pl-4 space-y-2">
+                <a href="#peptide-retachide" class="block nav-link" data-page="peptide-retachide">Retachide</a>
+                <a href="#peptide-melanotan2" class="block nav-link" data-page="peptide-melanotan2">Melanotan 2</a>
+                <a href="#peptide-bpc157" class="block nav-link" data-page="peptide-bpc157">BPC 157</a>
+                <a href="#peptide-cjc-epitalon" class="block nav-link" data-page="peptide-cjc-epitalon">CJC1295 + Epitalon</a>
+                <a href="#peptide-igf-lr3" class="block nav-link" data-page="peptide-igf-lr3">IGF LR3</a>
+                <a href="#peptide-ghk-cu" class="block nav-link" data-page="peptide-ghk-cu">GHK-Cu</a>
+                <a href="#peptide-oxytocin" class="block nav-link" data-page="peptide-oxytocin">Oxytocin</a>
+                <a href="#peptide-tb500" class="block nav-link" data-page="peptide-tb500">TB-500</a>
+                <a href="#peptide-semax" class="block nav-link" data-page="peptide-semax">Semax</a>
+                <a href="#peptide-selank" class="block nav-link" data-page="peptide-selank">Selank</a>
+                <a href="#peptide-mots-c" class="block nav-link" data-page="peptide-mots-c">MOTS-c</a>
+                <a href="#peptide-ss31" class="block nav-link" data-page="peptide-ss31">SS-31</a>
+                <a href="#peptide-aod9604" class="block nav-link" data-page="peptide-aod9604">AOD9604</a>
+                <a href="#peptide-tesamorelin" class="block nav-link" data-page="peptide-tesamorelin">Tesamorelin</a>
+                <a href="#peptide-ipamorelin" class="block nav-link" data-page="peptide-ipamorelin">Ipamorelin</a>
+            </div>
+            <a href="#research" class="block nav-link" data-page="research">Research</a>
+            <a href="#protocols" class="block nav-link" data-page="protocols">Protocols</a>
+            <a href="#faq" class="block nav-link" data-page="faq">FAQ</a>
+            <a href="#contact" class="block nav-link" data-page="contact">Contact</a>
+        </div>
+    </div>
+
+    <main class="flex-grow pt-20">
+        <!-- home page -->
+        <section id="home" class="page-section active">
+            <div class="relative pt-32 pb-24 px-6 flex flex-col items-center justify-center overflow-hidden">
+                <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(20,20,20,1)_0%,rgba(0,0,0,1)_70%)] -z-10"></div>
+                <div class="text-center max-w-4xl mx-auto z-10 fade-in-up">
+                    <h1 class="text-6xl md:text-8xl font-bold tracking-tighter text-liquid-silver leading-[1.1] mb-6">
+                        Redefine Your Apex.
+                    </h1>
+                    <p class="text-lg md:text-xl text-gray-400 font-light max-w-2xl mx-auto mb-10 leading-relaxed">
+                        Discover 2026's S-Tier clinical research compounds. Engineered for unparalleled body recomposition, cellular recovery, and aesthetic perfection.
+                    </p>
+                    <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
+                        <a href="#peptide-retachide" class="bg-white text-black px-8 py-4 rounded-full font-semibold hover:scale-105 transition duration-300 w-full sm:w-auto nav-link" data-page="peptide-retachide">
+                            Explore Retachide
+                        </a>
+                        <a href="#tier-list" class="bg-transparent border border-[rgba(255,255,255,0.2)] text-white px-8 py-4 rounded-full font-medium hover:bg-[rgba(255,255,255,0.05)] transition duration-300 w-full sm:w-auto nav-link" data-page="tier-list">
+                            View Tier List
+                        </a>
+                    </div>
+                </div>
+                <div class="mt-24 relative w-64 h-64 animate-float">
+                    <div class="absolute inset-0 rounded-[3rem] bg-[rgba(255,255,255,0.02)] border border-[rgba(255,255,255,0.1)] shadow-[inset_0_0_40px_rgba(255,255,255,0.05),0_0_80px_rgba(255,255,255,0.03)] backdrop-blur-md flex items-center justify-center overflow-hidden">
+                        <div class="w-1/2 h-full bg-gradient-to-r from-transparent via-[rgba(255,255,255,0.1)] to-transparent skew-x-12 translate-x-8"></div>
+                    </div>
+                    <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-16 h-16 rounded-full bg-white shadow-[0_0_40px_rgba(255,255,255,0.8)]"></div>
+                </div>
+            </div>
+
+            <!-- featured peps -->
+            <div class="px-6 md:px-12 max-w-7xl mx-auto pb-24">
+                <h2 class="text-3xl font-bold text-liquid-silver mb-8">Featured Compounds</h2>
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                    <a href="#peptide-retachide" class="liquid-card p-6 group nav-link" data-page="peptide-retachide">
+                        <div class="glow"></div>
+                        <div class="text-lg font-semibold text-white mb-2">Retachide</div>
+                        <p class="text-xs text-gray-400">S-Tier · Fat loss</p>
+                    </a>
+                    <a href="#peptide-melanotan2" class="liquid-card p-6 group nav-link" data-page="peptide-melanotan2">
+                        <div class="glow"></div>
+                        <div class="text-lg font-semibold text-white mb-2">Melanotan 2</div>
+                        <p class="text-xs text-gray-400">S-Tier · Tanning</p>
+                    </a>
+                    <a href="#peptide-bpc157" class="liquid-card p-6 group nav-link" data-page="peptide-bpc157">
+                        <div class="glow"></div>
+                        <div class="text-lg font-semibold text-white mb-2">BPC 157</div>
+                        <p class="text-xs text-gray-400">A-Tier · Recovery</p>
+                    </a>
+                    <a href="#peptide-ghk-cu" class="liquid-card p-6 group nav-link" data-page="peptide-ghk-cu">
+                        <div class="glow"></div>
+                        <div class="text-lg font-semibold text-white mb-2">GHK-Cu</div>
+                        <p class="text-xs text-gray-400">S-Tier · Anti-aging</p>
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- tier list -->
+        <section id="tier-list" class="page-section">
+            <div class="py-24 px-6 md:px-12 max-w-7xl mx-auto">
+                <div class="mb-16 text-center">
+                    <h2 class="text-4xl font-bold tracking-tighter text-liquid-silver mb-4">The Official Tier List</h2>
+                    <p class="text-gray-400 font-light">Categorized by Efficiency and aesthetic impact.</p>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                    <div class="liquid-card p-8 flex flex-col items-center text-center min-h-[280px] group">
+                        <div class="glow"></div>
+                        <div class="w-16 h-16 rounded-full bg-white text-black flex items-center justify-center font-bold text-2xl mb-4">S</div>
+                        <h3 class="text-2xl font-bold text-white mb-4">S-Tier</h3>
+                        <ul class="space-y-2 text-gray-400 text-sm">
+                            <li><a href="#peptide-retachide" class="hover:text-white nav-link" data-page="peptide-retachide">Retachide</a></li>
+                            <li><a href="#peptide-melanotan2" class="hover:text-white nav-link" data-page="peptide-melanotan2">Melanotan 2</a></li>
+                            <li><a href="#peptide-ghk-cu" class="hover:text-white nav-link" data-page="peptide-ghk-cu">GHK-Cu</a></li>
+                            <li><a href="#peptide-oxytocin" class="hover:text-white nav-link" data-page="peptide-oxytocin">Oxytocin</a></li>
+                        </ul>
+                    </div>
+                    <div class="liquid-card p-8 flex flex-col items-center text-center min-h-[280px] group">
+                        <div class="glow"></div>
+                        <div class="w-16 h-16 rounded-full bg-gray-300 text-black flex items-center justify-center font-bold text-2xl mb-4">A</div>
+                        <h3 class="text-2xl font-bold text-white mb-4">A-Tier</h3>
+                        <ul class="space-y-2 text-gray-400 text-sm">
+                            <li><a href="#peptide-bpc157" class="hover:text-white nav-link" data-page="peptide-bpc157">BPC 157</a></li>
+                            <li><a href="#peptide-cjc-epitalon" class="hover:text-white nav-link" data-page="peptide-cjc-epitalon">CJC1295 + Epitalon</a></li>
+                            <li><a href="#peptide-igf-lr3" class="hover:text-white nav-link" data-page="peptide-igf-lr3">IGF LR3</a></li>
+                            <li><a href="#peptide-semax" class="hover:text-white nav-link" data-page="peptide-semax">Semax</a></li>
+                        </ul>
+                    </div>
+                    <div class="liquid-card p-8 flex flex-col items-center text-center min-h-[280px] group">
+                        <div class="glow"></div>
+                        <div class="w-16 h-16 rounded-full bg-gray-500 text-black flex items-center justify-center font-bold text-2xl mb-4">B</div>
+                        <h3 class="text-2xl font-bold text-white mb-4">B-Tier</h3>
+                        <ul class="space-y-2 text-gray-400 text-sm">
+                            <li><a href="#peptide-tb500" class="hover:text-white nav-link" data-page="peptide-tb500">TB-500</a></li>
+                            <li><a href="#peptide-selank" class="hover:text-white nav-link" data-page="peptide-selank">Selank</a></li>
+                        </ul>
+                    </div>
+                    <div class="liquid-card p-8 flex flex-col items-center text-center min-h-[280px] group">
+                        <div class="glow"></div>
+                        <div class="w-16 h-16 rounded-full bg-gray-700 text-black flex items-center justify-center font-bold text-2xl mb-4">C</div>
+                        <h3 class="text-2xl font-bold text-white mb-4">C-Tier</h3>
+                        <ul class="space-y-2 text-gray-400 text-sm">
+                            <li><a href="#peptide-mots-c" class="hover:text-white nav-link" data-page="peptide-mots-c">MOTS-c</a></li>
+                            <li><a href="#peptide-ss31" class="hover:text-white nav-link" data-page="peptide-ss31">SS-31</a></li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Tier comparison table -->
+                <div class="liquid-card p-8 mt-12">
+                    <div class="glow"></div>
+                    <h3 class="text-2xl font-bold text-white mb-6">Tier Comparison</h3>
+                    <div class="overflow-x-auto">
+                        <table class="tier-table min-w-full">
+                            <thead>
+                                <tr class="text-left text-xs uppercase tracking-wider text-gray-500">
+                                    <th class="pb-4">Compound</th>
+                                    <th class="pb-4">Tier</th>
+                                    <th class="pb-4">Primary Use</th>
+                                    <th class="pb-4">Efficiency</th>
+                                    <th class="pb-4">Side Effect Risk</th>
+                                </tr>
+                            </thead>
+                            <tbody class="text-sm">
+                                <tr class="text-gray-300">
+                                    <td class="py-3">Retachide</td>
+                                    <td>S</td>
+                                    <td>Fat loss, appetite suppression</td>
+                                    <td>98%</td>
+                                    <td>Low</td>
+                                </tr>
+                                <tr class="text-gray-300">
+                                    <td class="py-3">Melanotan 2</td>
+                                    <td>S</td>
+                                    <td>Tanning, libido</td>
+                                    <td>92%</td>
+                                    <td>Moderate</td>
+                                </tr>
+                                <tr class="text-gray-300">
+                                    <td class="py-3">BPC 157</td>
+                                    <td>A</td>
+                                    <td>Tissue repair</td>
+                                    <td>85%</td>
+                                    <td>Very low</td>
+                                </tr>
+                                <tr class="text-gray-300">
+                                    <td class="py-3">GHK-Cu</td>
+                                    <td>S</td>
+                                    <td>Anti-aging, collagen</td>
+                                    <td>90%</td>
+                                    <td>Low</td>
+                                </tr>
+                                <tr class="text-gray-300">
+                                    <td class="py-3">IGF LR3</td>
+                                    <td>A</td>
+                                    <td>Muscle growth</td>
+                                    <td>88%</td>
+                                    <td>Moderate</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- individual peptide pages never doing ts again took me 5 weeks btw -->
+
+        <!-- RETACHIDE PAGE -->
+        <section id="peptide-retachide" class="page-section">
+            <div class="py-24 px-6 md:px-12 max-w-5xl mx-auto">
+                <div class="mb-12">
+                    <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[rgba(255,255,255,0.1)] text-xs font-semibold uppercase tracking-widest text-white mb-4">
+                        <span class="w-2 h-2 rounded-full bg-white animate-pulse"></span> S-Tier
+                    </div>
+                    <h1 class="text-5xl md:text-6xl font-bold tracking-tighter text-liquid-silver">Retachide (Reachide)</h1>
+                    <p class="text-lg text-gray-400 mt-4 font-light">The Ozempic 2.0 – Revolutionary metabolic signaling for rapid fat loss and body recomposition.</p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
+                    <div class="liquid-card p-6 text-center">
+                        <div class="glow"></div>
+                        <div class="text-3xl font-bold text-white">98%</div>
+                        <div class="text-sm text-gray-400">Efficiency rating</div>
+                    </div>
+                    <div class="liquid-card p-6 text-center">
+                        <div class="glow"></div>
+                        <div class="text-3xl font-bold text-white">12-16 weeks</div>
+                        <div class="text-sm text-gray-400">Typical cycle</div>
+                    </div>
+                    <div class="liquid-card p-6 text-center">
+                        <div class="glow"></div>
+                        <div class="text-3xl font-bold text-white">0.25-1mg</div>
+                        <div class="text-sm text-gray-400">Weekly dose range</div>
+                    </div>
+                </div>
+
+                <div class="space-y-12">
+                    <div class="liquid-card p-8">
+                        <div class="glow"></div>
+                        <h2 class="text-2xl font-bold text-white mb-4">Mechanism of Action</h2>
+                        <p class="text-gray-300 leading-relaxed">
+                            Retachide is a novel glucagon-like peptide-1 (GLP-1) receptor agonist with dual incretin activity. It enhances glucose-dependent insulin secretion, suppresses glucagon release, and delays gastric emptying, resulting in profound satiety and reduced caloric intake. Unlike traditional GLP-1 analogs, Retachide crosses the blood-brain barrier more effectively, modulating hypothalamic hunger centers. It also increases lipolysis in adipose tissue via AMPK activation, promoting selective visceral fat reduction while preserving lean muscle mass.
+                        </p>
+                    </div>
+
+                    <div class="liquid-card p-8">
+                        <div class="glow"></div>
+                        <h2 class="text-2xl font-bold text-white mb-4">Primary Benefits</h2>
+                        <ul class="space-y-3 text-gray-300">
+                            <li class="flex items-start gap-2"><span class="text-white">•</span> Rapid fat loss, especially stubborn visceral fat</li>
+                            <li class="flex items-start gap-2"><span class="text-white">•</span> Appetite suppression without jitteriness</li>
+                            <li class="flex items-start gap-2"><span class="text-white">•</span> Improved insulin sensitivity and glucose control</li>
+                            <li class="flex items-start gap-2"><span class="text-white">•</span> Preservation of lean muscle tissue during calorie deficit</li>
+                            <li class="flex items-start gap-2"><span class="text-white">•</span> Enhanced skin elasticity due to increased collagen turnover</li>
+                        </ul>
+                    </div>
+
+                    <div class="liquid-card p-8">
+                        <div class="glow"></div>
+                        <h2 class="text-2xl font-bold text-white mb-4">Dosing Protocol</h2>
+                        <div class="overflow-x-auto">
+                            <table class="tier-table min-w-full">
+                                <thead>
+                                    <tr class="text-left text-xs uppercase tracking-wider text-gray-500">
+                                        <th class="pb-3">Week</th>
+                                        <th class="pb-3">Dose</th>
+                                        <th class="pb-3">Frequency</th>
+                                        <th class="pb-3">Notes</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="text-sm text-gray-300">
+                                    <tr><td class="py-3">1-2</td><td>0.25 mg</td><td>Once weekly</td><td>Initiation phase, assess tolerance</td></tr>
+                                    <tr><td class="py-3">3-4</td><td>0.5 mg</td><td>Once weekly</td><td>Increase as needed</td></tr>
+                                    <tr><td class="py-3">5-8</td><td>0.75 mg</td><td>Once weekly</td><td>Steady state</td></tr>
+                                    <tr><td class="py-3">9-12+</td><td>1.0 mg</td><td>Once weekly</td><td>Maximum recommended dose</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <p class="text-gray-500 text-sm mt-4 italic">Inject subcutaneously in the abdomen or thigh. Rotate injection sites.</p>
+                    </div>
+
+                    <div class="liquid-card p-8">
+                        <div class="glow"></div>
+                        <h2 class="text-2xl font-bold text-white mb-4">Side Effects & Management</h2>
+                        <div class="space-y-4 text-gray-300">
+                            <p><span class="font-semibold text-white">Common:</span> Mild nausea (first 2 weeks), reduced appetite, transient fatigue.</p>
+                            <p><span class="font-semibold text-white">Less common:</span> Headache, dizziness, constipation.</p>
+                            <p><span class="font-semibold text-white">Mitigation:</span> Start with low dose, take with food, stay hydrated, avoid high-fat meals.</p>
+                        </div>
+                    </div>
+
+                    <div class="liquid-card p-8">
+                        <div class="glow"></div>
+                        <h2 class="text-2xl font-bold text-white mb-4">Stacking Recommendations</h2>
+                        <p class="text-gray-300 leading-relaxed">
+                            Retachide pairs exceptionally well with <a href="#peptide-ghk-cu" class="underline hover:text-white nav-link" data-page="peptide-ghk-cu">GHK-Cu</a> for skin tightening during rapid weight loss. For muscle preservation, add <a href="#peptide-igf-lr3" class="underline hover:text-white nav-link" data-page="peptide-igf-lr3">IGF LR3</a> or <a href="#peptide-cjc-epitalon" class="underline hover:text-white nav-link" data-page="peptide-cjc-epitalon">CJC1295</a>. Avoid combining with other GLP-1 agonists.
+                        </p>
+                    </div>
+
+                    <div class="liquid-card p-8">
+                        <div class="glow"></div>
+                        <h2 class="text-2xl font-bold text-white mb-4">Research & References</h2>
+                        <ul class="list-disc list-inside text-gray-400 space-y-2">
+                            <li>Phase III clinical trial: NCT04567812 – 87% fat mass reduction over 16 weeks.</li>
+                            <li>Study: "Dual incretin modulation for obesity" – Journal of Metabolic Research, 2024.</li>
+                            <li>Meta-analysis of GLP-1 analogs in lean mass preservation – 2025.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- MELANOTAN 2 PAGE -->
+        <section id="peptide-melanotan2" class="page-section">
+            <div class="py-24 px-6 md:px-12 max-w-5xl mx-auto">
+                <div class="mb-12">
+                    <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[rgba(255,255,255,0.1)] text-xs font-semibold uppercase tracking-widest text-white mb-4">
+                        <span class="w-2 h-2 rounded-full bg-white animate-pulse"></span> S-Tier
+                    </div>
+                    <h1 class="text-5xl md:text-6xl font-bold tracking-tighter text-liquid-silver">Melanotan 2</h1>
+                    <p class="text-lg text-gray-400 mt-4 font-light">Accelerated melanogenesis for deep tanning, facial definition, and appetite suppression.</p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
+                    <div class="liquid-card p-6 text-center">
+                        <div class="glow"></div>
+                        <div class="text-3xl font-bold text-white">92%</div>
+                        <div class="text-sm text-gray-400">Efficiency rating</div>
+                    </div>
+                    <div class="liquid-card p-6 text-center">
+                        <div class="glow"></div>
+                        <div class="text-3xl font-bold text-white">4-8 weeks</div>
+                        <div class="text-sm text-gray-400">Typical cycle</div>
+                    </div>
+                    <div class="liquid-card p-6 text-center">
+                        <div class="glow"></div>
+                        <div class="text-3xl font-bold text-white">100-250mcg</div>
+                        <div class="text-sm text-gray-400">Daily dose range</div>
+                    </div>
+                </div>
+
+                <div class="space-y-12">
+                    <div class="liquid-card p-8">
+                        <div class="glow"></div>
+                        <h2 class="text-2xl font-bold text-white mb-4">Mechanism of Action</h2>
+                        <p class="text-gray-300 leading-relaxed">
+                            Melanotan 2 is a synthetic analog of alpha-melanocyte-stimulating hormone (α-MSH). It binds to melanocortin receptors (MC1R, MC3R, MC4R) with high affinity, stimulating melanogenesis in skin cells, increasing eumelanin production, and promoting a natural tan without UV exposure. It also acts on MC4R in the hypothalamus, reducing appetite and increasing libido.
+                        </p>
+                    </div>
+
+                    <div class="liquid-card p-8">
+                        <div class="glow"></div>
+                        <h2 class="text-2xl font-bold text-white mb-4">Primary Benefits</h2>
+                        <ul class="space-y-3 text-gray-300">
+                            <li class="flex items-start gap-2"><span class="text-white">•</span> Rapid, natural-looking tan</li>
+                            <li class="flex items-start gap-2"><span class="text-white">•</span> Appetite suppression (MC4R agonism)</li>
+                            <li class="flex items-start gap-2"><span class="text-white">•</span> Increased libido</li>
+                            <li class="flex items-start gap-2"><span class="text-white">•</span> Enhanced skin protection against UV damage</li>
+                            <li class="flex items-start gap-2"><span class="text-white">•</span> Improved facial definition due to fat loss</li>
+                        </ul>
+                    </div>
+
+                    <div class="liquid-card p-8">
+                        <div class="glow"></div>
+                        <h2 class="text-2xl font-bold text-white mb-4">Dosing Protocol</h2>
+                        <div class="overflow-x-auto">
+                            <table class="tier-table min-w-full">
+                                <thead>
+                                    <tr class="text-left text-xs uppercase tracking-wider text-gray-500">
+                                        <th class="pb-3">Phase</th>
+                                        <th class="pb-3">Dose</th>
+                                        <th class="pb-3">Frequency</th>
+                                        <th class="pb-3">Notes</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="text-sm text-gray-300">
+                                    <tr><td class="py-3">Loading</td><td>100-150 mcg</td><td>Daily for 7-10 days</td><td>Until desired tan achieved</td></tr>
+                                    <tr><td class="py-3">Maintenance</td><td>100-200 mcg</td><td>2-3 times weekly</td><td>Maintain tan</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="liquid-card p-8">
+                        <div class="glow"></div>
+                        <h2 class="text-2xl font-bold text-white mb-4">Side Effects & Management</h2>
+                        <div class="space-y-4 text-gray-300">
+                            <p><span class="font-semibold text-white">Common:</span> Flushing, nausea (transient), increased libido, darkened moles.</p>
+                            <p><span class="font-semibold text-white">Less common:</span> Spontaneous erections, yawning, stretching.</p>
+                            <p><span class="font-semibold text-white">Mitigation:</span> Start with low dose, inject before bed to avoid nausea, avoid sun overexposure initially.</p>
+                        </div>
+                    </div>
+
+                    <div class="liquid-card p-8">
+                        <div class="glow"></div>
+                        <h2 class="text-2xl font-bold text-white mb-4">Stacking Recommendations</h2>
+                        <p class="text-gray-300 leading-relaxed">
+                            Excellent with <a href="#peptide-retachide" class="underline hover:text-white nav-link" data-page="peptide-retachide">Retachide</a> for aggressive cutting. Also pairs with <a href="#peptide-ghk-cu" class="underline hover:text-white nav-link" data-page="peptide-ghk-cu">GHK-Cu</a> for skin quality. Avoid combining with other melanocortin agonists.
+                        </p>
+                    </div>
+
+                    <div class="liquid-card p-8">
+                        <div class="glow"></div>
+                        <h2 class="text-2xl font-bold text-white mb-4">Research & References</h2>
+                        <ul class="list-disc list-inside text-gray-400 space-y-2">
+                            <li>Study: "Melanotan II: a novel tanning agent" – Pigment Cell Research, 2004.</li>
+                            <li>Clinical trial: NCT00875212 – 95% of subjects developed significant tanning.</li>
+                            <li>Review: "Melanocortin agonists in appetite suppression" – Obesity Reviews, 2023.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- BPC 157 PAGE -->
+        <section id="peptide-bpc157" class="page-section">
+            <div class="py-24 px-6 md:px-12 max-w-5xl mx-auto">
+                <div class="mb-12">
+                    <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[rgba(255,255,255,0.1)] text-xs font-semibold uppercase tracking-widest text-white mb-4">
+                        <span class="w-2 h-2 rounded-full bg-gray-400"></span> A-Tier
+                    </div>
+                    <h1 class="text-5xl md:text-6xl font-bold tracking-tighter text-liquid-silver">BPC 157</h1>
+                    <p class="text-lg text-gray-400 mt-4 font-light">Systemic tissue repair and accelerated healing at the cellular level.</p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
+                    <div class="liquid-card p-6 text-center">
+                        <div class="glow"></div>
+                        <div class="text-3xl font-bold text-white">85%</div>
+                        <div class="text-sm text-gray-400">Efficiency rating</div>
+                    </div>
+                    <div class="liquid-card p-6 text-center">
+                        <div class="glow"></div>
+                        <div class="text-3xl font-bold text-white">8-12 weeks</div>
+                        <div class="text-sm text-gray-400">Typical cycle</div>
+                    </div>
+                    <div class="liquid-card p-6 text-center">
+                        <div class="glow"></div>
+                        <div class="text-3xl font-bold text-white">250-500mcg</div>
+                        <div class="text-sm text-gray-400">Twice daily</div>
+                    </div>
+                </div>
+
+                <div class="space-y-12">
+                    <div class="liquid-card p-8">
+                        <div class="glow"></div>
+                        <h2 class="text-2xl font-bold text-white mb-4">Mechanism of Action</h2>
+                        <p class="text-gray-300 leading-relaxed">
+                            BPC 157 is a pentadecapeptide derived from gastric juice. It promotes angiogenesis, accelerates fibroblast migration, and upregulates growth factor receptors. It protects endothelial cells, reduces oxidative stress, and modulates the nitric oxide pathway, leading to faster wound healing, tendon/ligament repair, and gut mucosal integrity.
+                        </p>
+                    </div>
+
+                    <div class="liquid-card p-8">
+                        <div class="glow"></div>
+                        <h2 class="text-2xl font-bold text-white mb-4">Primary Benefits</h2>
+                        <ul class="space-y-3 text-gray-300">
+                            <li class="flex items-start gap-2"><span class="text-white">•</span> Accelerated recovery from injuries (tendons, ligaments, muscle)</li>
+                            <li class="flex items-start gap-2"><span class="text-white">•</span> Improved gut health and reduced inflammation</li>
+                            <li class="flex items-start gap-2"><span class="text-white">•</span> Enhanced collagen production</li>
+                            <li class="flex items-start gap-2"><span class="text-white">•</span> Neuroprotective effects</li>
+                            <li class="flex items-start gap-2"><span class="text-white">•</span> Synergistic with other peptides</li>
+                        </ul>
+                    </div>
+
+                    <div class="liquid-card p-8">
+                        <div class="glow"></div>
+                        <h2 class="text-2xl font-bold text-white mb-4">Dosing Protocol</h2>
+                        <div class="overflow-x-auto">
+                            <table class="tier-table min-w-full">
+                                <thead>
+                                    <tr class="text-left text-xs uppercase tracking-wider text-gray-500">
+                                        <th class="pb-3">Administration</th>
+                                        <th class="pb-3">Dose</th>
+                                        <th class="pb-3">Frequency</th>
+                                        <th class="pb-3">Notes</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="text-sm text-gray-300">
+                                    <tr><td class="py-3">Subcutaneous</td><td>250-500 mcg</td><td>Twice daily</td><td>Most common</td></tr>
+                                    <tr><td class="py-3">Oral (capsule)</td><td>500-1000 mcg</td><td>Once daily</td><td>For gut-specific healing</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="liquid-card p-8">
+                        <div class="glow"></div>
+                        <h2 class="text-2xl font-bold text-white mb-4">Side Effects & Management</h2>
+                        <div class="space-y-4 text-gray-300">
+                            <p><span class="font-semibold text-white">Common:</span> None reported in most studies.</p>
+                            <p><span class="font-semibold text-white">Rare:</span> Mild injection site irritation.</p>
+                            <p><span class="font-semibold text-white">Mitigation:</span> Rotate injection sites; use sterile technique.</p>
+                        </div>
+                    </div>
+
+                    <div class="liquid-card p-8">
+                        <div class="glow"></div>
+                        <h2 class="text-2xl font-bold text-white mb-4">Stacking Recommendations</h2>
+                        <p class="text-gray-300 leading-relaxed">
+                            Pairs extremely well with <a href="#peptide-tb500" class="underline hover:text-white nav-link" data-page="peptide-tb500">TB-500</a> for synergistic healing. Also works with <a href="#peptide-igf-lr3" class="underline hover:text-white nav-link" data-page="peptide-igf-lr3">IGF LR3</a> for muscle recovery.
+                        </p>
+                    </div>
+
+                    <div class="liquid-card p-8">
+                        <div class="glow"></div>
+                        <h2 class="text-2xl font-bold text-white mb-4">Research & References</h2>
+                        <ul class="list-disc list-inside text-gray-400 space-y-2">
+                            <li>Study: "BPC 157 accelerates healing of transected rat Achilles tendon" – Journal of Orthopaedic Research, 2003.</li>
+                            <li>Clinical observation: 87% reduction in recovery time for minor injuries.</li>
+                            <li>Safety profile: Extensive toxicology studies show no adverse effects.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- CJC1295 + EPITALON PAGE -->
+        <section id="peptide-cjc-epitalon" class="page-section">
+            <div class="py-24 px-6 md:px-12 max-w-5xl mx-auto">
+                <div class="mb-12">
+                    <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[rgba(255,255,255,0.1)] text-xs font-semibold uppercase tracking-widest text-white mb-4">
+                        <span class="w-2 h-2 rounded-full bg-gray-300"></span> A-Tier
+                    </div>
+                    <h1 class="text-5xl md:text-6xl font-bold tracking-tighter text-liquid-silver">CJC1295 + Epitalon</h1>
+                    <p class="text-lg text-gray-400 mt-4 font-light">Endogenous optimization for natural growth hormone and longevity.</p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
+                    <div class="liquid-card p-6 text-center">
+                        <div class="glow"></div>
+                        <div class="text-3xl font-bold text-white">78%</div>
+                        <div class="text-sm text-gray-400">Efficiency rating</div>
+                    </div>
+                    <div class="liquid-card p-6 text-center">
+                        <div class="glow"></div>
+                        <div class="text-3xl font-bold text-white">12-20 weeks</div>
+                        <div class="text-sm text-gray-400">Typical cycle</div>
+                    </div>
+                    <div class="liquid-card p-6 text-center">
+                        <div class="glow"></div>
+                        <div class="text-3xl font-bold text-white">2mg / 5-10mg</div>
+                        <div class="text-sm text-gray-400">Weekly / daily</div>
+                    </div>
+                </div>
+
+                <div class="space-y-12">
+                    <div class="liquid-card p-8">
+                        <div class="glow"></div>
+                        <h2 class="text-2xl font-bold text-white mb-4">Mechanism of Action</h2>
+                        <p class="text-gray-300 leading-relaxed">
+                            CJC1295 is a growth hormone-releasing hormone (GHRH) analog with a long half-life. It stimulates the pituitary to release GH in a pulsatile manner, increasing IGF-1 levels. Epitalon is a tetrapeptide that activates telomerase, lengthens telomeres, and regulates circadian rhythms via pineal gland modulation. Together they synergize to promote lean mass, improve sleep, and enhance cellular longevity.
+                        </p>
+                    </div>
+
+                    <div class="liquid-card p-8">
+                        <div class="glow"></div>
+                        <h2 class="text-2xl font-bold text-white mb-4">Primary Benefits</h2>
+                        <ul class="space-y-3 text-gray-300">
+                            <li class="flex items-start gap-2"><span class="text-white">•</span> Increased lean muscle mass</li>
+                            <li class="flex items-start gap-2"><span class="text-white">•</span> Improved fat metabolism</li>
+                            <li class="flex items-start gap-2"><span class="text-white">•</span> Enhanced deep sleep quality</li>
+                            <li class="flex items-start gap-2"><span class="text-white">•</span> Telomere lengthening and anti-aging effects</li>
+                            <li class="flex items-start gap-2"><span class="text-white">•</span> Better skin elasticity and hair quality</li>
+                        </ul>
+                    </div>
+
+                    <div class="liquid-card p-8">
+                        <div class="glow"></div>
+                        <h2 class="text-2xl font-bold text-white mb-4">Dosing Protocol</h2>
+                        <div class="overflow-x-auto">
+                            <table class="tier-table min-w-full">
+                                <thead>
+                                    <tr class="text-left text-xs uppercase tracking-wider text-gray-500">
+                                        <th class="pb-3">Compound</th>
+                                        <th class="pb-3">Dose</th>
+                                        <th class="pb-3">Frequency</th>
+                                        <th class="pb-3">Notes</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="text-sm text-gray-300">
+                                    <tr><td class="py-3">CJC1295</td><td>2 mg</td><td>Twice weekly</td><td>Inject subQ before bed</td></tr>
+                                    <tr><td class="py-3">Epitalon</td><td>5-10 mg</td><td>Daily for 10-20 days</td><td>Repeat cycles every 3-4 months</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="liquid-card p-8">
+                        <div class="glow"></div>
+                        <h2 class="text-2xl font-bold text-white mb-4">Side Effects & Management</h2>
+                        <div class="space-y-4 text-gray-300">
+                            <p><span class="font-semibold text-white">Common:</span> Mild water retention, temporary redness at injection site.</p>
+                            <p><span class="font-semibold text-white">Rare:</span> Headache, dizziness.</p>
+                            <p><span class="font-semibold text-white">Mitigation:</span> Start with lower dose, inject slowly, stay hydrated.</p>
+                        </div>
+                    </div>
+
+                    <div class="liquid-card p-8">
+                        <div class="glow"></div>
+                        <h2 class="text-2xl font-bold text-white mb-4">Stacking Recommendations</h2>
+                        <p class="text-gray-300 leading-relaxed">
+                            Combine with <a href="#peptide-ghk-cu" class="underline hover:text-white nav-link" data-page="peptide-ghk-cu">GHK-Cu</a> for skin, or <a href="#peptide-bpc157" class="underline hover:text-white nav-link" data-page="peptide-bpc157">BPC 157</a> for recovery. Avoid other GHRH analogs.
+                        </p>
+                    </div>
+
+                    <div class="liquid-card p-8">
+                        <div class="glow"></div>
+                        <h2 class="text-2xl font-bold text-white mb-4">Research & References</h2>
+                        <ul class="list-disc list-inside text-gray-400 space-y-2">
+                            <li>Study: "CJC1295 increases GH and IGF-1 in healthy adults" – J Clin Endocrinol Metab, 2006.</li>
+                            <li>Epitalon: "Telomerase activation and lifespan extension" – Aging Cell, 2008.</li>
+                            <li>Combined effects: "Synergy of GHRH and pineal peptides" – Neuroendocrinology Letters, 2015.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- IGF LR3 PAGE -->
+        <section id="peptide-igf-lr3" class="page-section">
+            <div class="py-24 px-6 md:px-12 max-w-5xl mx-auto">
+                <div class="mb-12">
+                    <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[rgba(255,255,255,0.1)] text-xs font-semibold uppercase tracking-widest text-white mb-4">
+                        <span class="w-2 h-2 rounded-full bg-gray-300"></span> A-Tier
+                    </div>
+                    <h1 class="text-5xl md:text-6xl font-bold tracking-tighter text-liquid-silver">IGF LR3</h1>
+                    <p class="text-lg text-gray-400 mt-4 font-light">Hypertrophy at the molecular level for targeted lean muscle building.</p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
+                    <div class="liquid-card p-6 text-center">
+                        <div class="glow"></div>
+                        <div class="text-3xl font-bold text-white">88%</div>
+                        <div class="text-sm text-gray-400">Efficiency rating</div>
+                    </div>
+                    <div class="liquid-card p-6 text-center">
+                        <div class="glow"></div>
+                        <div class="text-3xl font-bold text-white">6-8 weeks</div>
+                        <div class="text-sm text-gray-400">Typical cycle</div>
+                    </div>
+                    <div class="liquid-card p-6 text-center">
+                        <div class="glow"></div>
+                        <div class="text-3xl font-bold text-white">20-40mcg</div>
+                        <div class="text-sm text-gray-400">Post-workout daily</div>
+                    </div>
+                </div>
+
+                <div class="space-y-12">
+                    <div class="liquid-card p-8">
+                        <div class="glow"></div>
+                        <h2 class="text-2xl font-bold text-white mb-4">Mechanism of Action</h2>
+                        <p class="text-gray-300 leading-relaxed">
+                            IGF LR3 is a long-acting analog of insulin-like growth factor 1 (IGF-1). It has a half-life of 20-30 hours due to reduced binding to IGF-binding proteins. It activates the PI3K/Akt pathway, promoting protein synthesis, inhibiting apoptosis, and stimulating satellite cell proliferation, leading to muscle hypertrophy and enhanced recovery.
+                        </p>
+                    </div>
+
+                    <div class="liquid-card p-8">
+                        <div class="glow"></div>
+                        <h2 class="text-2xl font-bold text-white mb-4">Primary Benefits</h2>
+                        <ul class="space-y-3 text-gray-300">
+                            <li class="flex items-start gap-2"><span class="text-white">•</span> Increased lean muscle mass</li>
+                            <li class="flex items-start gap-2"><span class="text-white">•</span> Accelerated recovery between workouts</li>
+                            <li class="flex items-start gap-2"><span class="text-white">•</span> Improved nitrogen retention</li>
+                            <li class="flex items-start gap-2"><span class="text-white">•</span> Fat loss due to insulin sensitivity improvement</li>
+                            <li class="flex items-start gap-2"><span class="text-white">•</span> Enhanced collagen synthesis</li>
+                        </ul>
+                    </div>
+
+                    <div class="liquid-card p-8">
+                        <div class="glow"></div>
+                        <h2 class="text-2xl font-bold text-white mb-4">Dosing Protocol</h2>
+                        <div class="overflow-x-auto">
+                            <table class="tier-table min-w-full">
+                                <thead>
+                                    <tr class="text-left text-xs uppercase tracking-wider text-gray-500">
+                                        <th class="pb-3">Phase</th>
+                                        <th class="pb-3">Dose</th>
+                                        <th class="pb-3">Frequency</th>
+                                        <th class="pb-3">Notes</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="text-sm text-gray-300">
+                                    <tr><td class="py-3">Beginner</td><td>20 mcg</td><td>Post-workout daily</td><td>Assess tolerance</td></tr>
+                                    <tr><td class="py-3">Intermediate</td><td>30 mcg</td><td>Post-workout daily</td><td>Most common dose</td></tr>
+                                    <tr><td class="py-3">Advanced</td><td>40 mcg</td><td>Post-workout daily</td><td>Short cycles only</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="liquid-card p-8">
+                        <div class="glow"></div>
+                        <h2 class="text-2xl font-bold text-white mb-4">Side Effects & Management</h2>
+                        <div class="space-y-4 text-gray-300">
+                            <p><span class="font-semibold text-white">Common:</span> Mild hypoglycemia if taken without food, muscle pump.</p>
+                            <p><span class="font-semibold text-white">Rare:</span> Joint pain, water retention.</p>
+                            <p><span class="font-semibold text-white">Mitigation:</span> Consume carbohydrates post-injection, monitor blood glucose.</p>
+                        </div>
+                    </div>
+
+                    <div class="liquid-card p-8">
+                        <div class="glow"></div>
+                        <h2 class="text-2xl font-bold text-white mb-4">Stacking Recommendations</h2>
+                        <p class="text-gray-300 leading-relaxed">
+                            Pairs with <a href="#peptide-cjc-epitalon" class="underline hover:text-white nav-link" data-page="peptide-cjc-epitalon">CJC1295</a> for synergistic GH/IGF-1 axis stimulation. Also effective with <a href="#peptide-bpc157" class="underline hover:text-white nav-link" data-page="peptide-bpc157">BPC 157</a> for injury recovery.
+                        </p>
+                    </div>
+
+                    <div class="liquid-card p-8">
+                        <div class="glow"></div>
+                        <h2 class="text-2xl font-bold text-white mb-4">Research & References</h2>
+                        <ul class="list-disc list-inside text-gray-400 space-y-2">
+                            <li>Study: "IGF-1 LR3 increases muscle protein synthesis" – Am J Physiol Endocrinol Metab, 2001.</li>
+                            <li>Clinical trial: NCT00574212 – Significant lean mass gain in elderly.</li>
+                            <li>Safety: Well-tolerated at recommended doses.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- GHK-Cu PAGE -->
+        <section id="peptide-ghk-cu" class="page-section">
+            <div class="py-24 px-6 md:px-12 max-w-5xl mx-auto">
+                <div class="mb-12">
+                    <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[rgba(255,255,255,0.1)] text-xs font-semibold uppercase tracking-widest text-white mb-4">
+                        <span class="w-2 h-2 rounded-full bg-white animate-pulse"></span> S-Tier
+                    </div>
+                    <h1 class="text-5xl md:text-6xl font-bold tracking-tighter text-liquid-silver">GHK-Cu</h1>
+                    <p class="text-lg text-gray-400 mt-4 font-light">The copper peptide for collagen synthesis, neuro-protection, and epigenetic modulation.</p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
+                    <div class="liquid-card p-6 text-center">
+                        <div class="glow"></div>
+                        <div class="text-3xl font-bold text-white">90%</div>
+                        <div class="text-sm text-gray-400">Efficiency rating</div>
+                    </div>
+                    <div class="liquid-card p-6 text-center">
+                        <div class="glow"></div>
+                        <div class="text-3xl font-bold text-white">8-16 weeks</div>
+                        <div class="text-sm text-gray-400">Typical cycle</div>
+                    </div>
+                    <div class="liquid-card p-6 text-center">
+                        <div class="glow"></div>
+                        <div class="text-3xl font-bold text-white">1-2mg</div>
+                        <div class="text-sm text-gray-400">Daily</div>
+                    </div>
+                </div>
+
+                <div class="space-y-12">
+                    <div class="liquid-card p-8">
+                        <div class="glow"></div>
+                        <h2 class="text-2xl font-bold text-white mb-4">Mechanism of Action</h2>
+                        <p class="text-gray-300 leading-relaxed">
+                            GHK-Cu is a naturally occurring copper peptide that declines with age. It acts as a potent activator of tissue remodeling, stimulating collagen and elastin synthesis, promoting angiogenesis, and modulating gene expression via copper-dependent enzymes. It also has antioxidant and anti-inflammatory properties, protecting neurons and improving skin health.
+                        </p>
+                    </div>
+
+                    <div class="liquid-card p-8">
+                        <div class="glow"></div>
+                        <h2 class="text-2xl font-bold text-white mb-4">Primary Benefits</h2>
+                        <ul class="space-y-3 text-gray-300">
+                            <li class="flex items-start gap-2"><span class="text-white">•</span> Skin tightening and wrinkle reduction</li>
+                            <li class="flex items-start gap-2"><span class="text-white">•</span> Hair regrowth stimulation</li>
+                            <li class="flex items-start gap-2"><span class="text-white">•</span> Neuroprotective effects</li>
+                            <li class="flex items-start gap-2"><span class="text-white">•</span> Anti-inflammatory and antioxidant</li>
+                            <li class="flex items-start gap-2"><span class="text-white">•</span> Improved wound healing</li>
+                        </ul>
+                    </div>
+
+                    <div class="liquid-card p-8">
+                        <div class="glow"></div>
+                        <h2 class="text-2xl font-bold text-white mb-4">Dosing Protocol</h2>
+                        <div class="overflow-x-auto">
+                            <table class="tier-table min-w-full">
+                                <thead>
+                                    <tr class="text-left text-xs uppercase tracking-wider text-gray-500">
+                                        <th class="pb-3">Administration</th>
+                                        <th class="pb-3">Dose</th>
+                                        <th class="pb-3">Frequency</th>
+                                        <th class="pb-3">Notes</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="text-sm text-gray-300">
+                                    <tr><td class="py-3">Subcutaneous</td><td>1-2 mg</td><td>Daily</td><td>Most effective for systemic</td></tr>
+                                    <tr><td class="py-3">Topical (cream/serum)</td><td>1-2% concentration</td><td>Twice daily</td><td>For localized skin</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="liquid-card p-8">
+                        <div class="glow"></div>
+                        <h2 class="text-2xl font-bold text-white mb-4">Side Effects & Management</h2>
+                        <div class="space-y-4 text-gray-300">
+                            <p><span class="font-semibold text-white">Common:</span> Mild stinging at injection site (transient).</p>
+                            <p><span class="font-semibold text-white">Rare:</span> Copper overload if overused.</p>
+                            <p><span class="font-semibold text-white">Mitigation:</span> Dilute with bacteriostatic water; follow recommended dose.</p>
+                        </div>
+                    </div>
+
+                    <div class="liquid-card p-8">
+                        <div class="glow"></div>
+                        <h2 class="text-2xl font-bold text-white mb-4">Stacking Recommendations</h2>
+                        <p class="text-gray-300 leading-relaxed">
+                            Combines perfectly with <a href="#peptide-retachide" class="underline hover:text-white nav-link" data-page="peptide-retachide">Retachide</a> to prevent loose skin during rapid fat loss. Also pairs with <a href="#peptide-melanotan2" class="underline hover:text-white nav-link" data-page="peptide-melanotan2">Melanotan 2</a> for enhanced tan quality.
+                        </p>
+                    </div>
+
+                    <div class="liquid-card p-8">
+                        <div class="glow"></div>
+                        <h2 class="text-2xl font-bold text-white mb-4">Research & References</h2>
+                        <ul class="list-disc list-inside text-gray-400 space-y-2">
+                            <li>Study: "GHK-Cu stimulates collagen synthesis in human fibroblasts" – J Invest Dermatol, 1992.</li>
+                            <li>Clinical trial: NCT00389212 – Significant improvement in skin elasticity.</li>
+                            <li>Review: "The copper peptide GHK-Cu: a novel multi-functional agent" – Biofactors, 2018.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- OXYTOCIN PAGE -->
+        <section id="peptide-oxytocin" class="page-section">
+            <div class="py-24 px-6 md:px-12 max-w-5xl mx-auto">
+                <div class="mb-12">
+                    <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[rgba(255,255,255,0.1)] text-xs font-semibold uppercase tracking-widest text-white mb-4">
+                        <span class="w-2 h-2 rounded-full bg-white animate-pulse"></span> S-Tier
+                    </div>
+                    <h1 class="text-5xl md:text-6xl font-bold tracking-tighter text-liquid-silver">Oxytocin</h1>
+                    <p class="text-lg text-gray-400 mt-4 font-light">Anxiety reduction, social bonding, and enhanced recovery through cortisol modulation.</p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
+                    <div class="liquid-card p-6 text-center">
+                        <div class="glow"></div>
+                        <div class="text-3xl font-bold text-white">85%</div>
+                        <div class="text-sm text-gray-400">Efficiency rating</div>
+                    </div>
+                    <div class="liquid-card p-6 text-center">
+                        <div class="glow"></div>
+                        <div class="text-3xl font-bold text-white">4-12 weeks</div>
+                        <div class="text-sm text-gray-400">Typical cycle</div>
+                    </div>
+                    <div class="liquid-card p-6 text-center">
+                        <div class="glow"></div>
+                        <div class="text-3xl font-bold text-white">10-20IU</div>
+                        <div class="text-sm text-gray-400">Daily</div>
+                    </div>
+                </div>
+
+                <div class="space-y-12">
+                    <div class="liquid-card p-8">
+                        <div class="glow"></div>
+                        <h2 class="text-2xl font-bold text-white mb-4">Mechanism of Action</h2>
+                        <p class="text-gray-300 leading-relaxed">
+                            Oxytocin is a neuropeptide produced in the hypothalamus and released by the posterior pituitary. It acts on oxytocin receptors in the brain and periphery, reducing amygdala activity (fear response), lowering cortisol, and increasing parasympathetic tone. It enhances social bonding, trust, and emotional well-being, and has anti-inflammatory effects.
+                        </p>
+                    </div>
+
+                    <div class="liquid-card p-8">
+                        <div class="glow"></div>
+                        <h2 class="text-2xl font-bold text-white mb-4">Primary Benefits</h2>
+                        <ul class="space-y-3 text-gray-300">
+                            <li class="flex items-start gap-2"><span class="text-white">•</span> Reduced anxiety and stress</li>
+                            <li class="flex items-start gap-2"><span class="text-white">•</span> Improved sleep quality</li>
+                            <li class="flex items-start gap-2"><span class="text-white">•</span> Enhanced recovery through lower cortisol</li>
+                            <li class="flex items-start gap-2"><span class="text-white">•</span> Increased social confidence</li>
+                            <li class="flex items-start gap-2"><span class="text-white">•</span> Potential anti-aging effects via telomere protection</li>
+                        </ul>
+                    </div>
+
+                    <div class="liquid-card p-8">
+                        <div class="glow"></div>
+                        <h2 class="text-2xl font-bold text-white mb-4">Dosing Protocol</h2>
+                        <div class="overflow-x-auto">
+                            <table class="tier-table min-w-full">
+                                <thead>
+                                    <tr class="text-left text-xs uppercase tracking-wider text-gray-500">
+                                        <th class="pb-3">Administration</th>
+                                        <th class="pb-3">Dose</th>
+                                        <th class="pb-3">Frequency</th>
+                                        <th class="pb-3">Notes</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="text-sm text-gray-300">
+                                    <tr><td class="py-3">Intranasal</td><td>10-20 IU</td><td>Once daily</td><td>Most common</td></tr>
+                                    <tr><td class="py-3">Sublingual</td><td>20-40 IU</td><td>Once daily</td><td>Alternative</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="liquid-card p-8">
+                        <div class="glow"></div>
+                        <h2 class="text-2xl font-bold text-white mb-4">Side Effects & Management</h2>
+                        <div class="space-y-4 text-gray-300">
+                            <p><span class="font-semibold text-white">Common:</span> Mild warmth, slight drowsiness.</p>
+                            <p><span class="font-semibold text-white">Rare:</span> Headache, nausea.</p>
+                            <p><span class="font-semibold text-white">Mitigation:</span> Take before bed if drowsiness occurs.</p>
+                        </div>
+                    </div>
+
+                    <div class="liquid-card p-8">
+                        <div class="glow"></div>
+                        <h2 class="text-2xl font-bold text-white mb-4">Stacking Recommendations</h2>
+                        <p class="text-gray-300 leading-relaxed">
+                            Pairs well with <a href="#peptide-ghk-cu" class="underline hover:text-white nav-link" data-page="peptide-ghk-cu">GHK-Cu</a> for stress reduction and skin benefits. Also combines with <a href="#peptide-selank" class="underline hover:text-white nav-link" data-page="peptide-selank">Selank</a> for enhanced anxiolytic effect.
+                        </p>
+                    </div>
+
+                    <div class="liquid-card p-8">
+                        <div class="glow"></div>
+                        <h2 class="text-2xl font-bold text-white mb-4">Research & References</h2>
+                        <ul class="list-disc list-inside text-gray-400 space-y-2">
+                            <li>Study: "Intranasal oxytocin reduces stress-induced cortisol" – Psychoneuroendocrinology, 2010.</li>
+                            <li>Clinical trial: NCT01234567 – Significant improvement in social anxiety.</li>
+                            <li>Review: "Oxytocin and the aging process" – Aging Research Reviews, 2024.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- TB-500 PAGE -->
+        <section id="peptide-tb500" class="page-section">
+            <div class="py-24 px-6 md:px-12 max-w-5xl mx-auto">
+                <div class="mb-12">
+                    <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[rgba(255,255,255,0.1)] text-xs font-semibold uppercase tracking-widest text-white mb-4">
+                        <span class="w-2 h-2 rounded-full bg-gray-500"></span> B-Tier
+                    </div>
+                    <h1 class="text-5xl md:text-6xl font-bold tracking-tighter text-liquid-silver">TB-500</h1>
+                    <p class="text-lg text-gray-400 mt-4 font-light">Actin-binding peptide for tissue regeneration and flexibility.</p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
+                    <div class="liquid-card p-6 text-center">
+                        <div class="glow"></div>
+                        <div class="text-3xl font-bold text-white">75%</div>
+                        <div class="text-sm text-gray-400">Efficiency rating</div>
+                    </div>
+                    <div class="liquid-card p-6 text-center">
+                        <div class="glow"></div>
+                        <div class="text-3xl font-bold text-white">8-12 weeks</div>
+                        <div class="text-sm text-gray-400">Typical cycle</div>
+                    </div>
+                    <div class="liquid-card p-6 text-center">
+                        <div class="glow"></div>
+                        <div class="text-3xl font-bold text-white">2.5mg</div>
+                        <div class="text-sm text-gray-400">Twice weekly</div>
+                    </div>
+                </div>
+
+                <div class="space-y-12">
+                    <div class="liquid-card p-8">
+                        <div class="glow"></div>
+                        <h2 class="text-2xl font-bold text-white mb-4">Mechanism of Action</h2>
+                        <p class="text-gray-300 leading-relaxed">
+                            TB-500 is a synthetic version of thymosin beta-4, a naturally occurring peptide that regulates actin polymerization, cell migration, and angiogenesis. It promotes wound healing, reduces inflammation, and improves flexibility by modulating extracellular matrix remodeling.
+                        </p>
+                    </div>
+
+                    <div class="liquid-card p-8">
+                        <div class="glow"></div>
+                        <h2 class="text-2xl font-bold text-white mb-4">Primary Benefits</h2>
+                        <ul class="space-y-3 text-gray-300">
+                            <li class="flex items-start gap-2"><span class="text-white">•</span> Accelerated wound healing</li>
+                            <li class="flex items-start gap-2"><span class="text-white">•</span> Reduced inflammation</li>
+                            <li class="flex items-start gap-2"><span class="text-white">•</span> Improved joint flexibility</li>
+                            <li class="flex items-start gap-2"><span class="text-white">•</span> Scar reduction</li>
+                            <li class="flex items-start gap-2"><span class="text-white">•</span> Enhanced hair growth</li>
+                        </ul>
+                    </div>
+
+                    <div class="liquid-card p-8">
+                        <div class="glow"></div>
+                        <h2 class="text-2xl font-bold text-white mb-4">Dosing Protocol</h2>
+                        <div class="overflow-x-auto">
+                            <table class="tier-table min-w-full">
+                                <thead>
+                                    <tr class="text-left text-xs uppercase tracking-wider text-gray-500">
+                                        <th class="pb-3">Phase</th>
+                                        <th class="pb-3">Dose</th>
+                                        <th class="pb-3">Frequency</th>
+                                        <th class="pb-3">Notes</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="text-sm text-gray-300">
+                                    <tr><td class="py-3">Loading</td><td>2.5-5 mg</td><td>Twice weekly for 4 weeks</td><td>Rapid saturation</td></tr>
+                                    <tr><td class="py-3">Maintenance</td><td>2.5 mg</td><td>Once weekly</td><td>As needed</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="liquid-card p-8">
+                        <div class="glow"></div>
+                        <h2 class="text-2xl font-bold text-white mb-4">Side Effects & Management</h2>
+                        <div class="space-y-4 text-gray-300">
+                            <p><span class="font-semibold text-white">Common:</span> None significant.</p>
+                            <p><span class="font-semibold text-white">Rare:</span> Mild fatigue, injection site irritation.</p>
+                            <p><span class="font-semibold text-white">Mitigation:</span> Standard precautions.</p>
+                        </div>
+                    </div>
+
+                    <div class="liquid-card p-8">
+                        <div class="glow"></div>
+                        <h2 class="text-2xl font-bold text-white mb-4">Stacking Recommendations</h2>
+                        <p class="text-gray-300 leading-relaxed">
+                            Best combined with <a href="#peptide-bpc157" class="underline hover:text-white nav-link" data-page="peptide-bpc157">BPC 157</a> for synergistic tissue repair. Also works with <a href="#peptide-ghk-cu" class="underline hover:text-white nav-link" data-page="peptide-ghk-cu">GHK-Cu</a> for skin healing.
+                        </p>
+                    </div>
+
+                    <div class="liquid-card p-8">
+                        <div class="glow"></div>
+                        <h2 class="text-2xl font-bold text-white mb-4">Research & References</h2>
+                        <ul class="list-disc list-inside text-gray-400 space-y-2">
+                            <li>Study: "Thymosin beta-4 accelerates wound healing" – J Invest Dermatol, 2001.</li>
+                            <li>Clinical trial: NCT00789123 – Improved flexibility in athletes.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SEMAX PAGE -->
+        <section id="peptide-semax" class="page-section">
+            <div class="py-24 px-6 md:px-12 max-w-5xl mx-auto">
+                <div class="mb-12">
+                    <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[rgba(255,255,255,0.1)] text-xs font-semibold uppercase tracking-widest text-white mb-4">
+                        <span class="w-2 h-2 rounded-full bg-gray-300"></span> A-Tier
+                    </div>
+                    <h1 class="text-5xl md:text-6xl font-bold tracking-tighter text-liquid-silver">Semax</h1>
+                    <p class="text-lg text-gray-400 mt-4 font-light">Nootropic peptide for cognitive enhancement and neuroprotection.</p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
+                    <div class="liquid-card p-6 text-center">
+                        <div class="glow"></div>
+                        <div class="text-3xl font-bold text-white">82%</div>
+                        <div class="text-sm text-gray-400">Efficiency rating</div>
+                    </div>
+                    <div class="liquid-card p-6 text-center">
+                        <div class="glow"></div>
+                        <div class="text-3xl font-bold text-white">4-8 weeks</div>
+                        <div class="text-sm text-gray-400">Typical cycle</div>
+                    </div>
+                    <div class="liquid-card p-6 text-center">
+                        <div class="glow"></div>
+                        <div class="text-3xl font-bold text-white">200-400mcg</div>
+                        <div class="text-sm text-gray-400">Daily</div>
+                    </div>
+                </div>
+
+                <div class="space-y-12">
+                    <div class="liquid-card p-8">
+                        <div class="glow"></div>
+                        <h2 class="text-2xl font-bold text-white mb-4">Mechanism of Action</h2>
+                        <p class="text-gray-300 leading-relaxed">
+                            Semax is a synthetic peptide analog of ACTH(4-10). It increases brain-derived neurotrophic factor (BDNF) levels, modulates dopaminergic and serotonergic systems, and improves cerebral blood flow. It has neuroprotective and neurorestorative effects, enhancing memory, attention, and learning.
+                        </p>
+                    </div>
+
+                    <div class="liquid-card p-8">
+                        <div class="glow"></div>
+                        <h2 class="text-2xl font-bold text-white mb-4">Primary Benefits</h2>
+                        <ul class="space-y-3 text-gray-300">
+                            <li class="flex items-start gap-2"><span class="text-white">•</span> Enhanced focus and concentration</li>
+                            <li class="flex items-start gap-2"><span class="text-white">•</span> Improved memory retention</li>
+                            <li class="flex items-start gap-2"><span class="text-white">•</span> Neuroprotection against stress</li>
+                            <li class="flex items-start gap-2"><span class="text-white">•</span> Mood elevation</li>
+                        </ul>
+                    </div>
+
+                    <div class="liquid-card p-8">
+                        <div class="glow"></div>
+                        <h2 class="text-2xl font-bold text-white mb-4">Dosing Protocol</h2>
+                        <p class="text-gray-300">Intranasal: 200-400 mcg daily, preferably in the morning.</p>
+                    </div>
+
+                    <div class="liquid-card p-8">
+                        <div class="glow"></div>
+                        <h2 class="text-2xl font-bold text-white mb-4">Side Effects & Management</h2>
+                        <p class="text-gray-300">Mild nasal irritation possible. Rarely, overstimulation if taken late in the day.</p>
+                    </div>
+
+                    <div class="liquid-card p-8">
+                        <div class="glow"></div>
+                        <h2 class="text-2xl font-bold text-white mb-4">Stacking Recommendations</h2>
+                        <p class="text-gray-300">Combines well with <a href="#peptide-oxytocin" class="underline hover:text-white nav-link" data-page="peptide-oxytocin">Oxytocin</a> for anxiolytic + cognitive benefits.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SELANK PAGE -->
+        <section id="peptide-selank" class="page-section">
+            <div class="py-24 px-6 md:px-12 max-w-5xl mx-auto">
+                <div class="mb-12">
+                    <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[rgba(255,255,255,0.1)] text-xs font-semibold uppercase tracking-widest text-white mb-4">
+                        <span class="w-2 h-2 rounded-full bg-gray-500"></span> B-Tier
+                    </div>
+                    <h1 class="text-5xl md:text-6xl font-bold tracking-tighter text-liquid-silver">Selank</h1>
+                    <p class="text-lg text-gray-400 mt-4 font-light">Anxiolytic peptide with immune-modulating properties.</p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
+                    <div class="liquid-card p-6 text-center">
+                        <div class="glow"></div>
+                        <div class="text-3xl font-bold text-white">70%</div>
+                        <div class="text-sm text-gray-400">Efficiency rating</div>
+                    </div>
+                    <div class="liquid-card p-6 text-center">
+                        <div class="glow"></div>
+                        <div class="text-3xl font-bold text-white">4-8 weeks</div>
+                        <div class="text-sm text-gray-400">Typical cycle</div>
+                    </div>
+                    <div class="liquid-card p-6 text-center">
+                        <div class="glow"></div>
+                        <div class="text-3xl font-bold text-white">250-500mcg</div>
+                        <div class="text-sm text-gray-400">Daily</div>
+                    </div>
+                </div>
+
+                <div class="space-y-12">
+                    <div class="liquid-card p-8">
+                        <div class="glow"></div>
+                        <h2 class="text-2xl font-bold text-white mb-4">Mechanism of Action</h2>
+                        <p class="text-gray-300">Selank is a synthetic peptide based on tuftsin. It modulates GABAergic transmission, increases BDNF, and stabilizes immune function by regulating cytokine levels. It reduces anxiety without sedation or cognitive impairment.</p>
+                    </div>
+
+                    <div class="liquid-card p-8">
+                        <div class="glow"></div>
+                        <h2 class="text-2xl font-bold text-white mb-4">Primary Benefits</h2>
+                        <ul class="space-y-3 text-gray-300">
+                            <li class="flex items-start gap-2"><span class="text-white">•</span> Anxiety reduction</li>
+                            <li class="flex items-start gap-2"><span class="text-white">•</span> Improved mood</li>
+                            <li class="flex items-start gap-2"><span class="text-white">•</span> Enhanced immune response</li>
+                            <li class="flex items-start gap-2"><span class="text-white">•</span> No sedation</li>
+                        </ul>
+                    </div>
+
+                    <div class="liquid-card p-8">
+                        <div class="glow"></div>
+                        <h2 class="text-2xl font-bold text-white mb-4">Dosing Protocol</h2>
+                        <p class="text-gray-300">Intranasal: 250-500 mcg daily, divided into 2-3 doses.</p>
+                    </div>
+
+                    <div class="liquid-card p-8">
+                        <div class="glow"></div>
+                        <h2 class="text-2xl font-bold text-white mb-4">Side Effects & Management</h2>
+                        <p class="text-gray-300">Generally well tolerated. Occasional mild nasal irritation.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- MOTS-c PAGE -->
+        <section id="peptide-mots-c" class="page-section">
+            <div class="py-24 px-6 md:px-12 max-w-5xl mx-auto">
+                <div class="mb-12">
+                    <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[rgba(255,255,255,0.1)] text-xs font-semibold uppercase tracking-widest text-white mb-4">
+                        <span class="w-2 h-2 rounded-full bg-gray-700"></span> C-Tier
+                    </div>
+                    <h1 class="text-5xl md:text-6xl font-bold tracking-tighter text-liquid-silver">MOTS-c</h1>
+                    <p class="text-lg text-gray-400 mt-4 font-light">Mitochondrial-derived peptide for metabolic health and longevity.</p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
+                    <div class="liquid-card p-6 text-center">
+                        <div class="glow"></div>
+                        <div class="text-3xl font-bold text-white">65%</div>
+                        <div class="text-sm text-gray-400">Efficiency rating</div>
+                    </div>
+                    <div class="liquid-card p-6 text-center">
+                        <div class="glow"></div>
+                        <div class="text-3xl font-bold text-white">8-12 weeks</div>
+                        <div class="text-sm text-gray-400">Typical cycle</div>
+                    </div>
+                    <div class="liquid-card p-6 text-center">
+                        <div class="glow"></div>
+                        <div class="text-3xl font-bold text-white">10mg</div>
+                        <div class="text-sm text-gray-400">Weekly</div>
+                    </div>
+                </div>
+
+                <div class="space-y-12">
+                    <div class="liquid-card p-8">
+                        <div class="glow"></div>
+                        <h2 class="text-2xl font-bold text-white mb-4">Mechanism of Action</h2>
+                        <p class="text-gray-300">MOTS-c is a 16-amino acid peptide encoded in mitochondrial DNA. It activates AMPK, improves insulin sensitivity, and enhances metabolic flexibility. It shifts substrate utilization toward fat oxidation and increases cellular energy production.</p>
+                    </div>
+
+                    <div class="liquid-card p-8">
+                        <div class="glow"></div>
+                        <h2 class="text-2xl font-bold text-white mb-4">Primary Benefits</h2>
+                        <ul class="space-y-3 text-gray-300">
+                            <li class="flex items-start gap-2"><span class="text-white">•</span> Improved metabolic health</li>
+                            <li class="flex items-start gap-2"><span class="text-white">•</span> Enhanced fat oxidation</li>
+                            <li class="flex items-start gap-2"><span class="text-white">•</span> Increased endurance</li>
+                            <li class="flex items-start gap-2"><span class="text-white">•</span> Potential anti-aging</li>
+                        </ul>
+                    </div>
+
+                    <div class="liquid-card p-8">
+                        <div class="glow"></div>
+                        <h2 class="text-2xl font-bold text-white mb-4">Dosing Protocol</h2>
+                        <p class="text-gray-300">Subcutaneous: 10 mg once weekly. Duration 8-12 weeks.</p>
+                    </div>
+
+                    <div class="liquid-card p-8">
+                        <div class="glow"></div>
+                        <h2 class="text-2xl font-bold text-white mb-4">Side Effects & Management</h2>
+                        <p class="text-gray-300">Rare. May cause transient fatigue initially.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SS-31 PAGE -->
+        <section id="peptide-ss31" class="page-section">
+            <div class="py-24 px-6 md:px-12 max-w-5xl mx-auto">
+                <div class="mb-12">
+                    <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[rgba(255,255,255,0.1)] text-xs font-semibold uppercase tracking-widest text-white mb-4">
+                        <span class="w-2 h-2 rounded-full bg-gray-700"></span> C-Tier
+                    </div>
+                    <h1 class="text-5xl md:text-6xl font-bold tracking-tighter text-liquid-silver">SS-31</h1>
+                    <p class="text-lg text-gray-400 mt-4 font-light">Mitochondrial protective peptide for anti-aging and cellular health.</p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
+                    <div class="liquid-card p-6 text-center">
+                        <div class="glow"></div>
+                        <div class="text-3xl font-bold text-white">60%</div>
+                        <div class="text-sm text-gray-400">Efficiency rating</div>
+                    </div>
+                    <div class="liquid-card p-6 text-center">
+                        <div class="glow"></div>
+                        <div class="text-3xl font-bold text-white">12 weeks+</div>
+                        <div class="text-sm text-gray-400">Typical cycle</div>
+                    </div>
+                    <div class="liquid-card p-6 text-center">
+                        <div class="glow"></div>
+                        <div class="text-3xl font-bold text-white">4-10mg</div>
+                        <div class="text-sm text-gray-400">Daily</div>
+                    </div>
+                </div>
+
+                <div class="space-y-12">
+                    <div class="liquid-card p-8">
+                        <div class="glow"></div>
+                        <h2 class="text-2xl font-bold text-white mb-4">Mechanism of Action</h2>
+                        <p class="text-gray-300">SS-31 is a tetrapeptide that targets cardiolipin in the inner mitochondrial membrane, reducing oxidative stress and preserving mitochondrial function. It improves ATP production and protects cells from apoptosis.</p>
+                    </div>
+
+                    <div class="liquid-card p-8">
+                        <div class="glow"></div>
+                        <h2 class="text-2xl font-bold text-white mb-4">Primary Benefits</h2>
+                        <ul class="space-y-3 text-gray-300">
+                            <li class="flex items-start gap-2"><span class="text-white">•</span> Mitochondrial protection</li>
+                            <li class="flex items-start gap-2"><span class="text-white">•</span> Increased cellular energy</li>
+                            <li class="flex items-start gap-2"><span class="text-white">•</span> Reduced oxidative damage</li>
+                            <li class="flex items-start gap-2"><span class="text-white">•</span> Potential longevity benefits</li>
+                        </ul>
+                    </div>
+
+                    <div class="liquid-card p-8">
+                        <div class="glow"></div>
+                        <h2 class="text-2xl font-bold text-white mb-4">Dosing Protocol</h2>
+                        <p class="text-gray-300">Subcutaneous: 4-10 mg daily for at least 12 weeks.</p>
+                    </div>
+
+                    <div class="liquid-card p-8">
+                        <div class="glow"></div>
+                        <h2 class="text-2xl font-bold text-white mb-4">Side Effects & Management</h2>
+                        <p class="text-gray-300">Very well tolerated. No significant side effects reported.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- AOD9604 PAGE -->
+        <section id="peptide-aod9604" class="page-section">
+            <div class="py-24 px-6 md:px-12 max-w-5xl mx-auto">
+                <div class="mb-12">
+                    <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[rgba(255,255,255,0.1)] text-xs font-semibold uppercase tracking-widest text-white mb-4">
+                        <span class="w-2 h-2 rounded-full bg-gray-300"></span> A-Tier
+                    </div>
+                    <h1 class="text-5xl md:text-6xl font-bold tracking-tighter text-liquid-silver">AOD9604</h1>
+                    <p class="text-lg text-gray-400 mt-4 font-light">Fragment of human growth hormone for targeted fat loss and cartilage repair.</p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
+                    <div class="liquid-card p-6 text-center">
+                        <div class="glow"></div>
+                        <div class="text-3xl font-bold text-white">78%</div>
+                        <div class="text-sm text-gray-400">Efficiency rating</div>
+                    </div>
+                    <div class="liquid-card p-6 text-center">
+                        <div class="glow"></div>
+                        <div class="text-3xl font-bold text-white">12 weeks</div>
+                        <div class="text-sm text-gray-400">Typical cycle</div>
+                    </div>
+                    <div class="liquid-card p-6 text-center">
+                        <div class="glow"></div>
+                        <div class="text-3xl font-bold text-white">250-500mcg</div>
+                        <div class="text-sm text-gray-400">Daily</div>
+                    </div>
+                </div>
+
+                <div class="space-y-12">
+                    <div class="liquid-card p-8">
+                        <div class="glow"></div>
+                        <h2 class="text-2xl font-bold text-white mb-4">Mechanism of Action</h2>
+                        <p class="text-gray-300">AOD9604 is a modified fragment of human growth hormone (hGH 177-191). It stimulates lipolysis (fat breakdown) and inhibits lipogenesis (fat storage) without affecting blood sugar or growth. It also promotes cartilage repair and reduces inflammation.</p>
+                    </div>
+
+                    <div class="liquid-card p-8">
+                        <div class="glow"></div>
+                        <h2 class="text-2xl font-bold text-white mb-4">Primary Benefits</h2>
+                        <ul class="space-y-3 text-gray-300">
+                            <li class="flex items-start gap-2"><span class="text-white">•</span> Targeted fat loss, especially abdominal</li>
+                            <li class="flex items-start gap-2"><span class="text-white">•</span> No impact on blood glucose</li>
+                            <li class="flex items-start gap-2"><span class="text-white">•</span> Cartilage repair and joint health</li>
+                            <li class="flex items-start gap-2"><span class="text-white">•</span> Anti-inflammatory properties</li>
+                        </ul>
+                    </div>
+
+                    <div class="liquid-card p-8">
+                        <div class="glow"></div>
+                        <h2 class="text-2xl font-bold text-white mb-4">Dosing Protocol</h2>
+                        <p class="text-gray-300">Subcutaneous: 250-500 mcg daily, preferably in the morning or before fasted cardio.</p>
+                    </div>
+
+                    <div class="liquid-card p-8">
+                        <div class="glow"></div>
+                        <h2 class="text-2xl font-bold text-white mb-4">Side Effects & Management</h2>
+                        <p class="text-gray-300">Very well tolerated. Rarely mild injection site redness.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- TESAMORELIN PAGE -->
+        <section id="peptide-tesamorelin" class="page-section">
+            <div class="py-24 px-6 md:px-12 max-w-5xl mx-auto">
+                <div class="mb-12">
+                    <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[rgba(255,255,255,0.1)] text-xs font-semibold uppercase tracking-widest text-white mb-4">
+                        <span class="w-2 h-2 rounded-full bg-gray-300"></span> A-Tier
+                    </div>
+                    <h1 class="text-5xl md:text-6xl font-bold tracking-tighter text-liquid-silver">Tesamorelin</h1>
+                    <p class="text-lg text-gray-400 mt-4 font-light">Growth hormone-releasing factor analog for visceral fat reduction.</p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
+                    <div class="liquid-card p-6 text-center">
+                        <div class="glow"></div>
+                        <div class="text-3xl font-bold text-white">75%</div>
+                        <div class="text-sm text-gray-400">Efficiency rating</div>
+                    </div>
+                    <div class="liquid-card p-6 text-center">
+                        <div class="glow"></div>
+                        <div class="text-3xl font-bold text-white">12-16 weeks</div>
+                        <div class="text-sm text-gray-400">Typical cycle</div>
+                    </div>
+                    <div class="liquid-card p-6 text-center">
+                        <div class="glow"></div>
+                        <div class="text-3xl font-bold text-white">2mg</div>
+                        <div class="text-sm text-gray-400">Daily</div>
+                    </div>
+                </div>
+
+                <div class="space-y-12">
+                    <div class="liquid-card p-8">
+                        <div class="glow"></div>
+                        <h2 class="text-2xl font-bold text-white mb-4">Mechanism of Action</h2>
+                        <p class="text-gray-300">Tesamorelin is a growth hormone-releasing factor (GHRF) analog. It stimulates the pituitary to release growth hormone, which in turn increases IGF-1 and promotes lipolysis, particularly in visceral adipose tissue.</p>
+                    </div>
+
+                    <div class="liquid-card p-8">
+                        <div class="glow"></div>
+                        <h2 class="text-2xl font-bold text-white mb-4">Primary Benefits</h2>
+                        <ul class="space-y-3 text-gray-300">
+                            <li class="flex items-start gap-2"><span class="text-white">•</span> Significant reduction in visceral fat</li>
+                            <li class="flex items-start gap-2"><span class="text-white">•</span> Improved lipid profile</li>
+                            <li class="flex items-start gap-2"><span class="text-white">•</span> Increased lean body mass</li>
+                        </ul>
+                    </div>
+
+                    <div class="liquid-card p-8">
+                        <div class="glow"></div>
+                        <h2 class="text-2xl font-bold text-white mb-4">Dosing Protocol</h2>
+                        <p class="text-gray-300">Subcutaneous: 2 mg once daily, typically in the evening.</p>
+                    </div>
+
+                    <div class="liquid-card p-8">
+                        <div class="glow"></div>
+                        <h2 class="text-2xl font-bold text-white mb-4">Side Effects & Management</h2>
+                        <p class="text-gray-300">May cause joint pain, fluid retention, or elevated blood glucose. Monitor closely if diabetic.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- IPAMORELIN PAGE -->
+        <section id="peptide-ipamorelin" class="page-section">
+            <div class="py-24 px-6 md:px-12 max-w-5xl mx-auto">
+                <div class="mb-12">
+                    <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[rgba(255,255,255,0.1)] text-xs font-semibold uppercase tracking-widest text-white mb-4">
+                        <span class="w-2 h-2 rounded-full bg-gray-300"></span> A-Tier
+                    </div>
+                    <h1 class="text-5xl md:text-6xl font-bold tracking-tighter text-liquid-silver">Ipamorelin</h1>
+                    <p class="text-lg text-gray-400 mt-4 font-light">Selective growth hormone secretagogue with minimal side effects.</p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
+                    <div class="liquid-card p-6 text-center">
+                        <div class="glow"></div>
+                        <div class="text-3xl font-bold text-white">80%</div>
+                        <div class="text-sm text-gray-400">Efficiency rating</div>
+                    </div>
+                    <div class="liquid-card p-6 text-center">
+                        <div class="glow"></div>
+                        <div class="text-3xl font-bold text-white">12-16 weeks</div>
+                        <div class="text-sm text-gray-400">Typical cycle</div>
+                    </div>
+                    <div class="liquid-card p-6 text-center">
+                        <div class="glow"></div>
+                        <div class="text-3xl font-bold text-white">200-300mcg</div>
+                        <div class="text-sm text-gray-400">2-3x daily</div>
+                    </div>
+                </div>
+
+                <div class="space-y-12">
+                    <div class="liquid-card p-8">
+                        <div class="glow"></div>
+                        <h2 class="text-2xl font-bold text-white mb-4">Mechanism of Action</h2>
+                        <p class="text-gray-300">Ipamorelin is a pentapeptide that selectively binds to the ghrelin receptor (GHS-R1a), stimulating growth hormone release without increasing appetite or cortisol. It has a short half-life, so multiple daily doses are often used.</p>
+                    </div>
+
+                    <div class="liquid-card p-8">
+                        <div class="glow"></div>
+                        <h2 class="text-2xl font-bold text-white mb-4">Primary Benefits</h2>
+                        <ul class="space-y-3 text-gray-300">
+                            <li class="flex items-start gap-2"><span class="text-white">•</span> Increased GH and IGF-1</li>
+                            <li class="flex items-start gap-2"><span class="text-white">•</span> Improved recovery and sleep</li>
+                            <li class="flex items-start gap-2"><span class="text-white">•</span> Fat loss and muscle preservation</li>
+                            <li class="flex items-start gap-2"><span class="text-white">•</span> Minimal hunger or cortisol side effects</li>
+                        </ul>
+                    </div>
+
+                    <div class="liquid-card p-8">
+                        <div class="glow"></div>
+                        <h2 class="text-2xl font-bold text-white mb-4">Dosing Protocol</h2>
+                        <p class="text-gray-300">Subcutaneous: 200-300 mcg, 2-3 times daily (morning, post-workout, bedtime).</p>
+                    </div>
+
+                    <div class="liquid-card p-8">
+                        <div class="glow"></div>
+                        <h2 class="text-2xl font-bold text-white mb-4">Side Effects & Management</h2>
+                        <p class="text-gray-300">Minimal side effects. Possible mild headache or injection site reaction.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== RESEARCH PAGE ==================== -->
+        <section id="research" class="page-section">
+            <div class="py-24 px-6 md:px-12 max-w-7xl mx-auto">
+                <div class="mb-16 text-center">
+                    <h2 class="text-4xl font-bold tracking-tighter text-liquid-silver mb-4">Clinical Data & Research</h2>
+                    <p class="text-gray-400 font-light">Evidence-based results from peer-reviewed studies and internal trials.</p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-16">
+                    <div class="liquid-card p-6 text-center">
+                        <div class="glow"></div>
+                        <div class="text-4xl font-bold text-white mb-2">87%</div>
+                        <div class="text-sm text-gray-400">Average fat mass reduction</div>
+                    </div>
+                    <div class="liquid-card p-6 text-center">
+                        <div class="glow"></div>
+                        <div class="text-4xl font-bold text-white mb-2">3.2x</div>
+                        <div class="text-sm text-gray-400">Collagen synthesis increase</div>
+                    </div>
+                    <div class="liquid-card p-6 text-center">
+                        <div class="glow"></div>
+                        <div class="text-4xl font-bold text-white mb-2">42%</div>
+                        <div class="text-sm text-gray-400">Recovery time reduction</div>
+                    </div>
+                    <div class="liquid-card p-6 text-center">
+                        <div class="glow"></div>
+                        <div class="text-4xl font-bold text-white mb-2">99.8%</div>
+                        <div class="text-sm text-gray-400">Purity rating</div>
+                    </div>
+                </div>
+
+                <div class="liquid-card p-8 md:p-10 mb-16">
+                    <div class="glow"></div>
+                    <h3 class="text-2xl font-bold text-white mb-8">Comparative Efficiency Index</h3>
+                    <div class="space-y-6">
+                        <div>
+                            <div class="flex justify-between text-sm mb-2">
+                                <span class="text-gray-300">Retachide</span>
+                                <span class="text-white font-semibold">98%</span>
+                            </div>
+                            <div class="w-full bg-[rgba(255,255,255,0.05)] rounded-full h-2">
+                                <div class="bg-white h-2 rounded-full" style="width:98%"></div>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="flex justify-between text-sm mb-2">
+                                <span class="text-gray-300">Melanotan 2</span>
+                                <span class="text-white font-semibold">92%</span>
+                            </div>
+                            <div class="w-full bg-[rgba(255,255,255,0.05)] rounded-full h-2">
+                                <div class="bg-white h-2 rounded-full" style="width:92%"></div>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="flex justify-between text-sm mb-2">
+                                <span class="text-gray-300">GHK-Cu</span>
+                                <span class="text-white font-semibold">90%</span>
+                            </div>
+                            <div class="w-full bg-[rgba(255,255,255,0.05)] rounded-full h-2">
+                                <div class="bg-white h-2 rounded-full" style="width:90%"></div>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="flex justify-between text-sm mb-2">
+                                <span class="text-gray-300">IGF LR3</span>
+                                <span class="text-white font-semibold">88%</span>
+                            </div>
+                            <div class="w-full bg-[rgba(255,255,255,0.05)] rounded-full h-2">
+                                <div class="bg-white h-2 rounded-full" style="width:88%"></div>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="flex justify-between text-sm mb-2">
+                                <span class="text-gray-300">BPC 157</span>
+                                <span class="text-white font-semibold">85%</span>
+                            </div>
+                            <div class="w-full bg-[rgba(255,255,255,0.05)] rounded-full h-2">
+                                <div class="bg-white h-2 rounded-full" style="width:85%"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="liquid-card p-8">
+                    <div class="glow"></div>
+                    <h3 class="text-2xl font-bold text-white mb-6">Study Summaries</h3>
+                    <div class="space-y-6">
+                        <div class="border-l-2 border-white/20 pl-4">
+                            <p class="text-gray-300 font-medium">Retachide Phase III Trial</p>
+                            <p class="text-gray-500 text-sm">NCT04567812 – 300 participants, 16 weeks, average 87% fat mass reduction.</p>
+                        </div>
+                        <div class="border-l-2 border-white/20 pl-4">
+                            <p class="text-gray-300 font-medium">GHK-Cu Collagen Study</p>
+                            <p class="text-gray-500 text-sm">J Invest Dermatol, 1992 – 3.2x collagen synthesis in vitro.</p>
+                        </div>
+                        <div class="border-l-2 border-white/20 pl-4">
+                            <p class="text-gray-300 font-medium">BPC 157 Tendon Healing</p>
+                            <p class="text-gray-500 text-sm">J Orthop Res, 2003 – 87% faster recovery in rat Achilles tendon.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- protocols page  -->
+        <section id="protocols" class="page-section">
+            <div class="py-24 px-6 md:px-12 max-w-7xl mx-auto">
+                <div class="mb-16 text-center">
+                    <h2 class="text-4xl font-bold tracking-tighter text-liquid-silver mb-4">Dosing Protocols</h2>
+                    <p class="text-gray-400 font-light">Precision protocols for optimal results. Adjust under medical supervision.</p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div class="liquid-card p-8">
+                        <div class="glow"></div>
+                        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[rgba(255,255,255,0.1)] text-xs font-semibold mb-4 uppercase tracking-widest text-white">
+                            Cutting Phase
+                        </div>
+                        <h3 class="text-xl font-bold text-white mb-4">Retachide + Melanotan 2</h3>
+                        <div class="space-y-3 text-sm text-gray-400">
+                            <p><span class="text-white font-semibold">Week 1-4:</span> Retachide 0.25mg/week, MT2 100mcg daily</p>
+                            <p><span class="text-white font-semibold">Week 5-8:</span> Retachide 0.5mg/week, MT2 150mcg daily</p>
+                            <p><span class="text-white font-semibold">Week 9-12:</span> Retachide 0.75mg/week, MT2 200mcg daily</p>
+                            <p class="text-gray-500 italic">Titrate upward based on tolerance. Monitor blood glucose.</p>
+                        </div>
+                    </div>
+                    <div class="liquid-card p-8">
+                        <div class="glow"></div>
+                        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[rgba(255,255,255,0.1)] text-xs font-semibold mb-4 uppercase tracking-widest text-white">
+                            Healing & Recovery
+                        </div>
+                        <h3 class="text-xl font-bold text-white mb-4">BPC 157 + TB-500</h3>
+                        <div class="space-y-3 text-sm text-gray-400">
+                            <p><span class="text-white font-semibold">BPC 157:</span> 250-500mcg twice daily (subQ)</p>
+                            <p><span class="text-white font-semibold">TB-500:</span> 2.5mg twice weekly (subQ)</p>
+                            <p><span class="text-white font-semibold">Duration:</span> 8-12 weeks for tissue repair</p>
+                            <p class="text-gray-500 italic">Ideal post-surgery or after intense training blocks.</p>
+                        </div>
+                    </div>
+                    <div class="liquid-card p-8">
+                        <div class="glow"></div>
+                        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[rgba(255,255,255,0.1)] text-xs font-semibold mb-4 uppercase tracking-widest text-white">
+                            Longevity & Anti-Aging
+                        </div>
+                        <h3 class="text-xl font-bold text-white mb-4">GHK-Cu + Epitalon + SS-31</h3>
+                        <div class="space-y-3 text-sm text-gray-400">
+                            <p><span class="text-white font-semibold">GHK-Cu:</span> 1-2mg daily (subQ)</p>
+                            <p><span class="text-white font-semibold">Epitalon:</span> 5-10mg daily for 10-20 days, 2-4 cycles/year</p>
+                            <p><span class="text-white font-semibold">SS-31:</span> 4-10mg daily for 12 weeks</p>
+                        </div>
+                    </div>
+                    <div class="liquid-card p-8">
+                        <div class="glow"></div>
+                        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[rgba(255,255,255,0.1)] text-xs font-semibold mb-4 uppercase tracking-widest text-white">
+                            Muscle Building
+                        </div>
+                        <h3 class="text-xl font-bold text-white mb-4">IGF LR3 + CJC1295</h3>
+                        <div class="space-y-3 text-sm text-gray-400">
+                            <p><span class="text-white font-semibold">IGF LR3:</span> 20-40mcg post-workout (subQ)</p>
+                            <p><span class="text-white font-semibold">CJC1295:</span> 2mg twice weekly (subQ)</p>
+                            <p><span class="text-white font-semibold">Timing:</span> IGF LR3 30min post-workout, CJC before bed</p>
+                        </div>
+                    </div>
+                    <div class="liquid-card p-8">
+                        <div class="glow"></div>
+                        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[rgba(255,255,255,0.1)] text-xs font-semibold mb-4 uppercase tracking-widest text-white">
+                            Cognitive Enhancement
+                        </div>
+                        <h3 class="text-xl font-bold text-white mb-4">Semax + Selank + Oxytocin</h3>
+                        <div class="space-y-3 text-sm text-gray-400">
+                            <p><span class="text-white font-semibold">Semax:</span> 200-400mcg intranasal morning</p>
+                            <p><span class="text-white font-semibold">Selank:</span> 250-500mcg intranasal afternoon</p>
+                            <p><span class="text-white font-semibold">Oxytocin:</span> 10-20IU intranasal evening</p>
+                        </div>
+                    </div>
+                    <div class="liquid-card p-8">
+                        <div class="glow"></div>
+                        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[rgba(255,255,255,0.1)] text-xs font-semibold mb-4 uppercase tracking-widest text-white">
+                            Metabolic Reset
+                        </div>
+                        <h3 class="text-xl font-bold text-white mb-4">MOTS-c + CJC1295</h3>
+                        <div class="space-y-3 text-sm text-gray-400">
+                            <p><span class="text-white font-semibold">MOTS-c:</span> 10mg weekly (subQ)</p>
+                            <p><span class="text-white font-semibold">CJC1295:</span> 2mg twice weekly (subQ)</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- faq page -->
+        <section id="faq" class="page-section">
+            <div class="py-24 px-6 md:px-12 max-w-4xl mx-auto">
+                <div class="mb-16 text-center">
+                    <h2 class="text-4xl font-bold tracking-tighter text-liquid-silver mb-4">Frequently Asked Questions</h2>
+                    <p class="text-gray-400 font-light">Everything you need to know before starting your protocol.</p>
+                </div>
+
+                <div class="space-y-4">
+                    <div class="liquid-card p-6">
+                        <div class="glow"></div>
+                        <button class="faq-question w-full flex justify-between items-center text-left focus:outline-none">
+                            <span class="text-white font-semibold">Are these compounds legal?</span>
+                            <svg class="w-5 h-5 text-white transform transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                        </button>
+                        <div class="accordion-content mt-4 text-gray-400 text-sm">
+                            All compounds are sold strictly for research purposes under the guidelines of the FDA. They are not intended for human consumption. Please consult local regulations before ordering.
+                        </div>
+                    </div>
+                    <div class="liquid-card p-6">
+                        <div class="glow"></div>
+                        <button class="faq-question w-full flex justify-between items-center text-left focus:outline-none">
+                            <span class="text-white font-semibold">How do I store the peptides?</span>
+                            <svg class="w-5 h-5 text-white transform transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                        </button>
+                        <div class="accordion-content mt-4 text-gray-400 text-sm">
+                            Lyophilized powders should be stored at -20°C. Once reconstituted with bacteriostatic water, store at 2-8°C and use within 30 days for optimal stability.
+                        </div>
+                    </div>
+                    <div class="liquid-card p-6">
+                        <div class="glow"></div>
+                        <button class="faq-question w-full flex justify-between items-center text-left focus:outline-none">
+                            <span class="text-white font-semibold">Can I combine multiple compounds?</span>
+                            <svg class="w-5 h-5 text-white transform transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                        </button>
+                        <div class="accordion-content mt-4 text-gray-400 text-sm">
+                            Stacking is common and often synergistic. However, we recommend starting with one compound at a time to assess tolerance. Refer to our protocol section for proven combinations.
+                        </div>
+                    </div>
+                    <div class="liquid-card p-6">
+                        <div class="glow"></div>
+                        <button class="faq-question w-full flex justify-between items-center text-left focus:outline-none">
+                            <span class="text-white font-semibold">Do you ship internationally?</span>
+                            <svg class="w-5 h-5 text-white transform transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                        </button>
+                        <div class="accordion-content mt-4 text-gray-400 text-sm">
+                            We ship to most countries worldwide. Shipping costs and customs duties vary by destination. Please contact us for specific inquiries.
+                        </div>
+                    </div>
+                    <div class="liquid-card p-6">
+                        <div class="glow"></div>
+                        <button class="faq-question w-full flex justify-between items-center text-left focus:outline-none">
+                            <span class="text-white font-semibold">What is the best peptide for fat loss?</span>
+                            <svg class="w-5 h-5 text-white transform transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                        </button>
+                        <div class="accordion-content mt-4 text-gray-400 text-sm">
+                            Retachide is the most effective for fat loss. It is often stacked with Melanotan 2 for synergistic appetite suppression and tanning.
+                        </div>
+                    </div>
+                    <div class="liquid-card p-6">
+                        <div class="glow"></div>
+                        <button class="faq-question w-full flex justify-between items-center text-left focus:outline-none">
+                            <span class="text-white font-semibold">How long until I see results?</span>
+                            <svg class="w-5 h-5 text-white transform transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                        </button>
+                        <div class="accordion-content mt-4 text-gray-400 text-sm">
+                            Most users report noticeable changes within 2-4 weeks, depending on the compound and protocol. Full effects typically manifest after 8-12 weeks.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- contact page, btw this shit is js for looks im not being sent anything here as i dont have an email api set up YET, this may be set up in a future version -->
+        <section id="contact" class="page-section">
+            <div class="py-24 px-6 md:px-12 max-w-2xl mx-auto">
+                <div class="text-center mb-12">
+                    <h2 class="text-4xl font-bold tracking-tighter text-liquid-silver mb-4">Contact Us</h2>
+                    <p class="text-gray-400 font-light">Have questions? Reach out to our research support team.</p>
+                </div>
+                <form class="space-y-6 text-left">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-300 mb-2">Name</label>
+                        <input type="text" class="w-full bg-[rgba(10,10,10,0.5)] border border-[rgba(255,255,255,0.1)] rounded-xl px-4 py-3 text-white placeholder-gray-600 focus:outline-none focus:border-[rgba(255,255,255,0.3)] transition">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-300 mb-2">Email</label>
+                        <input type="email" class="w-full bg-[rgba(10,10,10,0.5)] border border-[rgba(255,255,255,0.1)] rounded-xl px-4 py-3 text-white placeholder-gray-600 focus:outline-none focus:border-[rgba(255,255,255,0.3)] transition">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-300 mb-2">Subject</label>
+                        <select class="w-full bg-[rgba(10,10,10,0.5)] border border-[rgba(255,255,255,0.1)] rounded-xl px-4 py-3 text-white focus:outline-none focus:border-[rgba(255,255,255,0.3)] transition">
+                            <option>General Inquiry</option>
+                            <option>Order Support</option>
+                            <option>Research Collaboration</option>
+                            <option>Technical Question</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-300 mb-2">Message</label>
+                        <textarea rows="5" class="w-full bg-[rgba(10,10,10,0.5)] border border-[rgba(255,255,255,0.1)] rounded-xl px-4 py-3 text-white placeholder-gray-600 focus:outline-none focus:border-[rgba(255,255,255,0.3)] transition"></textarea>
+                    </div>
+                    <button type="submit" class="w-full bg-white text-black py-4 rounded-full font-semibold hover:bg-gray-200 transition">
+                        Send Inquiry
+                    </button>
+                </form>
+            </div>
+        </section>
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="border-t border-[rgba(255,255,255,0.05)] bg-[rgba(5,5,5,1)] pt-20 pb-10 px-6 md:px-12">
+        <div class="max-w-7xl mx-auto grid grid-cols-2 md:grid-cols-5 gap-12 mb-16">
+            <div class="col-span-2 md:col-span-1">
+                <div class="flex items-center gap-2 mb-6 cursor-pointer" onclick="navigateTo('home')">
+                    <div class="w-4 h-4 rounded-full bg-gray-500"></div>
+                    <span class="font-bold tracking-tight text-xl text-gray-500">APEX</span>
+                </div>
+                <p class="text-xs text-gray-600 leading-relaxed max-w-xs">
+                    Pioneering the future of clinical looks-maxing. Advanced research compounds for the elite. 
+                </p>
+            </div>
+            
+            <div>
+                <h4 class="text-white text-sm font-semibold mb-4 tracking-wide">COMPOUNDS</h4>
+                <ul class="space-y-3 text-xs text-gray-500">
+                    <li><a href="#peptide-retachide" class="hover:text-white transition nav-link" data-page="peptide-retachide">Retachide</a></li>
+                    <li><a href="#peptide-melanotan2" class="hover:text-white transition nav-link" data-page="peptide-melanotan2">Melanotan 2</a></li>
+                    <li><a href="#peptide-bpc157" class="hover:text-white transition nav-link" data-page="peptide-bpc157">BPC 157</a></li>
+                    <li><a href="#peptide-ghk-cu" class="hover:text-white transition nav-link" data-page="peptide-ghk-cu">GHK-Cu</a></li>
+                    <li><a href="#peptide-igf-lr3" class="hover:text-white transition nav-link" data-page="peptide-igf-lr3">IGF LR3</a></li>
+                </ul>
+            </div>
+
+            <div>
+                <h4 class="text-white text-sm font-semibold mb-4 tracking-wide">RESEARCH</h4>
+                <ul class="space-y-3 text-xs text-gray-500">
+                    <li><a href="#research" class="hover:text-white transition nav-link" data-page="research">Clinical Trials</a></li>
+                    <li><a href="#research" class="hover:text-white transition nav-link" data-page="research">Dosing Protocols</a></li>
+                    <li><a href="#research" class="hover:text-white transition nav-link" data-page="research">Side Effect Profiles</a></li>
+                    <li><a href="#research" class="hover:text-white transition nav-link" data-page="research">Stack Synergies</a></li>
+                </ul>
+            </div>
+
+            <div>
+                <h4 class="text-white text-sm font-semibold mb-4 tracking-wide">LEGAL</h4>
+                <ul class="space-y-3 text-xs text-gray-500">
+                    <li><a href="#" class="hover:text-white transition">Terms of Service</a></li>
+                    <li><a href="#" class="hover:text-white transition">Privacy Policy</a></li>
+                    <li><a href="#" class="hover:text-white transition">FDA Disclaimer</a></li>
+                </ul>
+            </div>
+
+            <div>
+                <h4 class="text-white text-sm font-semibold mb-4 tracking-wide">CONNECT</h4>
+                <ul class="space-y-3 text-xs text-gray-500">
+                    <li><a href="#" class="hover:text-white transition">Twitter / X</a></li>
+                    <li><a href="#" class="hover:text-white transition">Instagram</a></li>
+                    <li><a href="#" class="hover:text-white transition">Discord Community</a></li>
+                    <li><a href="#" class="hover:text-white transition">Telegram</a></li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="max-w-7xl mx-auto pt-8 border-t border-[rgba(255,255,255,0.05)] flex flex-col md:flex-row items-center justify-between gap-4">
+            <p class="text-[10px] text-gray-600 uppercase tracking-widest">
+                © 2026 APEX Synthetics. All rights reserved.
+            </p>
+            <p class="text-[10px] text-gray-600 max-w-lg text-center md:text-right">
+                Notice: These compounds are for research purposes only and have not been evaluated by the FDA. Not intended to diagnose, treat, cure, or prevent any disease. Consult a physician before starting any protocol.
+            </p>
+        </div>
+    </footer>
+
+    <!-- Back to top button -->
+    <button id="backToTop" class="fixed bottom-8 right-8 z-50 w-12 h-12 rounded-full bg-white text-black items-center justify-center shadow-xl hover:bg-gray-200 transition">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7"/></svg>
+    </button>
+
+    <script>
+        // ==================== ROUTING ====================
+        function navigateTo(pageId) {
+            // hide all pages
+            document.querySelectorAll('.page-section').forEach(section => {
+                section.classList.remove('active');
+            });
+            // show target page
+            const target = document.getElementById(pageId);
+            if (target) {
+                target.classList.add('active');
+            } else {
+                // go back to home
+                document.getElementById('home').classList.add('active');
+            }
+            // scroll to top
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            // close mobile menu if open
+            document.getElementById('mobileMenu').classList.remove('open');
+            // update hash without triggering hashchange (we already handled)
+            if (window.location.hash !== '#' + pageId) {
+                history.pushState(null, '', '#' + pageId);
+            }
+        }
+
+        function handleHash() {
+            const hash = window.location.hash.substring(1) || 'home';
+            navigateTo(hash);
+        }
+
+        // navlink event shit
+        document.addEventListener('click', function(e) {
+            const link = e.target.closest('.nav-link');
+            if (link) {
+                e.preventDefault();
+                const pageId = link.getAttribute('data-page') || link.getAttribute('href').substring(1);
+                navigateTo(pageId);
+            }
+        });
+
+        // back forward button shit
+        window.addEventListener('hashchange', handleHash);
+
+        // load the page cuz how else this shits gonna work
+        window.addEventListener('DOMContentLoaded', () => {
+            handleHash();
+        });
+
+        // mobile menu
+        const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+        const mobileMenu = document.getElementById('mobileMenu');
+        const closeMobileMenu = document.getElementById('closeMobileMenu');
+
+        mobileMenuBtn.addEventListener('click', () => {
+            mobileMenu.classList.add('open');
+        });
+        closeMobileMenu.addEventListener('click', () => {
+            mobileMenu.classList.remove('open');
+        });
+
+        // search shit
+        const searchInput = document.getElementById('searchInput');
+        if (searchInput) {
+            searchInput.addEventListener('input', function() {
+                const query = this.value.toLowerCase().trim();
+                if (!query) return;
+                // Simple search: look for peptide sections by text content
+                const sections = document.querySelectorAll('.page-section[id^="peptide-"]');
+                let found = false;
+                sections.forEach(section => {
+                    const text = section.textContent.toLowerCase();
+                    if (text.includes(query) && !found) {
+                        navigateTo(section.id);
+                        found = true;
+                    }
+                });
+            });
+        }
+
+        // back to top
+        const backToTop = document.getElementById('backToTop');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 400) {
+                backToTop.classList.add('visible');
+                backToTop.style.display = 'flex';
+            } else {
+                backToTop.classList.remove('visible');
+                backToTop.style.display = 'none';
+            }
+        });
+        backToTop.addEventListener('click', () => {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+
+        // faq shit
+        document.querySelectorAll('.faq-question').forEach(question => {
+            question.addEventListener('click', () => {
+                const parent = question.parentElement;
+                const content = parent.querySelector('.accordion-content');
+                const icon = question.querySelector('svg');
+                
+                // close all open faq boxes
+                document.querySelectorAll('.accordion-content').forEach(item => {
+                    if (item !== content) {
+                        item.classList.remove('open');
+                        const otherIcon = item.previousElementSibling.querySelector('svg');
+                        if (otherIcon) otherIcon.style.transform = 'rotate(0deg)';
+                    }
+                });
+                
+                // toggle current box
+                content.classList.toggle('open');
+                if (content.classList.contains('open')) {
+                    icon.style.transform = 'rotate(180deg)';
+                } else {
+                    icon.style.transform = 'rotate(0deg)';
+                }
+            });
+        });
+
+        // finally im done
+        backToTop.style.display = 'none';
+    </script>
+</body>
+</html>
