@@ -2131,7 +2131,7 @@
             navigateTo(hash);
         }
 
-        // navlink event shit
+        // navlink event stuff
         document.addEventListener('click', function(e) {
             const link = e.target.closest('.nav-link');
             if (link) {
@@ -2141,10 +2141,10 @@
             }
         });
 
-        // back forward button shit
+        // back forward button 
         window.addEventListener('hashchange', handleHash);
 
-        // load the page cuz how else this shits gonna work
+        // load the page cuz how else this gonna work lol
         window.addEventListener('DOMContentLoaded', () => {
             handleHash();
         });
